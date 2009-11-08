@@ -23,9 +23,12 @@ public class AccelemeterDetector extends Detector implements
 
 	private float[] originalValues = null;
 
+	private int retrieved = 0;
+
 	public AccelemeterDetector(Context context) {
 		super(context);
-		sensorMgr = (SensorManager)context.getSystemService(android.content.Context.SEARCH_SERVICE);
+		sensorMgr = (SensorManager) context
+				.getSystemService(android.content.Context.SENSOR_SERVICE);
 	}
 
 	@Override
@@ -42,12 +45,13 @@ public class AccelemeterDetector extends Detector implements
 	public void onSensorChanged(SensorEvent event) {
 		synchronized (this) {
 			if (event.sensor.getType() == SensorManager.SENSOR_ACCELEROMETER) {
-				if (null == originalValues) {
-					originalValues = event.values;
+				if (retrieved <= 10) {
+					++retrieved;
+					originalValues = event.values.clone();
 				} else {
 					int changeLevel = compareValues(originalValues,
 							event.values);
-					super.onDetectorEvent(new DetectorEvent(this, changeLevel));
+					super.onDetectorEvent(changeLevel);
 				}
 			}
 		}
@@ -57,6 +61,8 @@ public class AccelemeterDetector extends Detector implements
 		int changeLevel = Detector.DETECTOR_CHANGELEVEL_TINY;
 		for (int i = 0; i < lhs.length; i++) {
 			int newChangeLevel = digitToChangeLevel(lhs[i] - rhs[i]);
+			Log.d("accDetect", "Axis " + i + "change value: "
+					+ (lhs[i] - rhs[i]));
 			if (changeLevel < newChangeLevel) {
 				changeLevel = newChangeLevel;
 			}
@@ -66,16 +72,16 @@ public class AccelemeterDetector extends Detector implements
 
 	private int digitToChangeLevel(float distance) {
 		float positiveDistance = Math.abs(distance);
-		if (positiveDistance < 0.1) {
+		if (positiveDistance < 2.4) {
 			return Detector.DETECTOR_CHANGELEVEL_TINY;
 		}
-		if (positiveDistance < 0.8) {
+		if (positiveDistance < 3.3) {
 			return Detector.DETECTOR_CHANGELEVEL_LOW;
 		}
-		if (positiveDistance < 1.7) {
+		if (positiveDistance < 5) {
 			return Detector.DETECTOR_CHANGELEVEL_NORMAL;
 		}
-		if (positiveDistance < 3) {
+		if (positiveDistance < 8) {
 			return Detector.DETECTOR_CHANGELEVEL_HIGH;
 		}
 		return Detector.DETECTOR_CHANGELEVEL_SIGNIFICANT;
@@ -83,6 +89,14 @@ public class AccelemeterDetector extends Detector implements
 
 	@Override
 	public boolean start() {
+		try {
+			Log.i("main", "starting...");
+			Thread.sleep(1000);
+			Log.i("main", "started");
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		List<Sensor> accSensors = sensorMgr
 				.getSensorList(SensorManager.SENSOR_ACCELEROMETER);
 		for (Sensor sensor : accSensors) {

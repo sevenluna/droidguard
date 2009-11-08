@@ -10,5 +10,5 @@ import java.util.EventListener;
  * 
  */
 public interface DetectorEventListener extends EventListener {
-	void onChangeDetected(DetectorEvent event);
+	void onDetectorChangeDetected(DetectorEvent event);
 }

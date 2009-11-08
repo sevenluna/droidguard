@@ -11,7 +11,7 @@ import android.os.IBinder;
  * @author Ken
  *
  */
-public class DroidGuardService extends Service {
+public class DroidGuardService extends Service implements DetectorEventListener{
 
 	/* (non-Javadoc)
 	 * @see android.app.Service#onBind(android.content.Intent)
@@ -22,4 +22,24 @@ public class DroidGuardService extends Service {
 		return null;
 	}
 
+	@Override
+	public void onCreate(){
+		super.onCreate();
+	}
+	
+	@Override
+	public void onStart(Intent intent, int startId){
+		super.onStart(intent, startId);
+	}
+	
+	@Override
+	public void onDestroy(){
+		super.onDestroy();
+	}
+
+	@Override
+	public void onDetectorChangeDetected(DetectorEvent event) {
+		// TODO Auto-generated method stub
+		
+	}
 }

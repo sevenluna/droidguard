@@ -45,9 +45,9 @@ public abstract class Detector {
 		return listeners.remove(listener);
 	}
 	
-	protected void onDetectorEvent(DetectorEvent event){
+	protected void onDetectorEvent(int changeLevel){
 		for(DetectorEventListener listener:listeners){
-			listener.onChangeDetected(event);
+			listener.onDetectorChangeDetected(new DetectorEvent(this, changeLevel));
 		}
 	}
 }
