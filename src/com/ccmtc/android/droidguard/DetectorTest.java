@@ -21,7 +21,7 @@ public class DetectorTest extends Activity implements DetectorEventListener {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.detectortest);
-		detector = new AccelemeterDetector(this);
+		detector = new AccelerometerDetector(this);
 		detector.registerListener(this);
 	}
 
