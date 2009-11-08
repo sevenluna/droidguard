@@ -16,11 +16,11 @@ public class DetectorEvent extends EventObject {
 	 */
 	private static final long serialVersionUID = 4053329384414833796L;
 
-	public final int level;
+	public final int changeLevel;
 
 	public DetectorEvent(Object source, int level) {
 		super(source);
-		this.level = level;
+		this.changeLevel = level;
 	}
 
 }
