@@ -6,6 +6,9 @@ package com.ccmtc.android.droidguard;
 import android.app.Activity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.Button;
 import android.widget.TextView;
 
 /**
@@ -15,14 +18,25 @@ import android.widget.TextView;
 public class DetectorTest extends Activity implements DetectorEventListener {
 
 	private Detector detector;
+	private Notifier notifier;
 
 	/** Called when the activity is first created. */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.detectortest);
+		Button stopButton = (Button) findViewById(R.id.stop);
+		stopButton.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				if (null != notifier) {
+					notifier.stop();
+				}
+			}
+		});
 		detector = new AccelerometerDetector(this);
 		detector.registerListener(this);
+		notifier = new RingtoneNotifier(this);
 	}
 
 	@Override
@@ -32,6 +46,10 @@ public class DetectorTest extends Activity implements DetectorEventListener {
 				+ "): " + event.changeLevel);
 		text.setText("Level changed to(" + System.currentTimeMillis() + "): "
 				+ event.changeLevel);
+		if (event.changeLevel > Detector.DETECTOR_CHANGELEVEL_MEDIUM
+				&& notifier.canExecute()) {
+			notifier.execute();
+		}
 	}
 
 	@Override
