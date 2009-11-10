@@ -262,7 +262,7 @@ public class PrefStore {
 		}
 		values[detectorType] = value;
 		getSharedPreferences(context).edit().putString(
-				PREF_DETECTOR_SENSITIVITIES, joinInts(values));
+				PREF_DETECTOR_SENSITIVITIES, joinInts(values)).commit();
 	}
 
 	/**

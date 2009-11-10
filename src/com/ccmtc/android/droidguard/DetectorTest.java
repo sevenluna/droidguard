@@ -46,7 +46,7 @@ public class DetectorTest extends Activity implements DetectorEventListener {
 		});
 
 		// Set detector and notifier for debugging.
-		PrefStore.resetAll(this);
+		//PrefStore.resetAll(this);
 		PrefStore.toggleDetector(this,
 				DetectorManager.DETECTOR_TYPE_ORIENTATION, true);
 		PrefStore.setDetectorSensitivity(this,
