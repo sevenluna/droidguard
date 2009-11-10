@@ -74,9 +74,6 @@ public class DroidGuard extends Activity {
 					Log.d("position","click at "+pos);					
 				}
             });
-        
-
-
     }
     
     /* 对话框生成器
@@ -140,7 +137,7 @@ public class DroidGuard extends Activity {
         	final boolean[] checkedItems = new boolean[NotifierManager.NOTIFIER_COUNT];
         	checkedItems[NotifierManager.NOTIFIER_TYPE_RINGTONE] = 
         		PrefStore.isNotifierSelected(DroidGuard.this, NotifierManager.NOTIFIER_TYPE_RINGTONE);
-        	checkedItems[NotifierManager.NOTIFIER_TYPE_RINGTONE] = 
+        	checkedItems[NotifierManager.NOTIFIER_TYPE_VIBERATION] = 
         		PrefStore.isNotifierSelected(DroidGuard.this, NotifierManager.NOTIFIER_TYPE_VIBERATION);
         	checkedItems[NotifierManager.NOTIFIER_TYPE_CALL]=
         		PrefStore.isNotifierSelected(DroidGuard.this, NotifierManager.NOTIFIER_TYPE_CALL);
