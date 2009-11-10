@@ -11,13 +11,13 @@ import android.content.Context;
  * @author Ken
  * 
  */
-public class DetectorManager {
+public final class DetectorManager {
 
 	public static final int DETECTOR_TYPE_ACCELEMETER = 0;
 
 	public static final int DETECTOR_TYPE_ORIENTATION = 1;
 
-	public static final int DETECTOR_TYPE_COUNT = 2;
+	public static final int DETECTOR_COUNT = 2;
 
 	public static Detector createDetector(Context context, int type) {
 		switch (type) {
