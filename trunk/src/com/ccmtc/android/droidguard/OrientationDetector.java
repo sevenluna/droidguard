@@ -137,7 +137,7 @@ public class OrientationDetector extends Detector implements
 		int changeLevel = Detector.DETECTOR_CHANGELEVEL_TINY;
 		for (int i = 0; i < lhs.length; i++) {
 			int newChangeLevel = digitToChangeLevel(lhs[i] - rhs[i]);
-			Log.d("accDetect", "Axis " + i + "change value: "
+			Log.d("oriDetect", "Axis " + i + "change value: "
 					+ (lhs[i] - rhs[i]));
 			if (changeLevel < newChangeLevel) {
 				changeLevel = newChangeLevel;
@@ -155,16 +155,16 @@ public class OrientationDetector extends Detector implements
 	 */
 	private int digitToChangeLevel(float distance) {
 		float positiveDistance = Math.abs(distance);
-		if (positiveDistance < 1.1) {
+		if (positiveDistance < 4) {
 			return Detector.DETECTOR_CHANGELEVEL_TINY;
 		}
-		if (positiveDistance < 2) {
+		if (positiveDistance < 11) {
 			return Detector.DETECTOR_CHANGELEVEL_LOW;
 		}
-		if (positiveDistance < 3) {
+		if (positiveDistance < 16) {
 			return Detector.DETECTOR_CHANGELEVEL_MEDIUM;
 		}
-		if (positiveDistance < 5) {
+		if (positiveDistance < 21) {
 			return Detector.DETECTOR_CHANGELEVEL_HIGH;
 		}
 		return Detector.DETECTOR_CHANGELEVEL_SIGNIFICANT;
