@@ -146,7 +146,7 @@ public class DroidGuard extends Activity {
 			builder.setTitle(R.string.sensitivity).setPositiveButton("OK",
 					new DialogInterface.OnClickListener() {
 						public void onClick(DialogInterface dialog, int id) {
-//							TextView lv = (TextView)contentlayout.findViewById(R.id.OpTitle);
+//							TextView lv = (TextView)contentlayout.findViewById(R.id.CurrentOp);
 //							lv.setText(currentSen);
 							
 						}
