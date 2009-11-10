@@ -30,6 +30,13 @@ public abstract class Notifier extends Object {
 	}
 
 	/**
+	 * Get type of the notifier.
+	 * 
+	 * @return The type of the notifier.
+	 */
+	public abstract int getType();
+
+	/**
 	 * Gets if this {@link Notifier} can execute a notification.
 	 * 
 	 * @return True if a notification can be executed currently. Otherwise,

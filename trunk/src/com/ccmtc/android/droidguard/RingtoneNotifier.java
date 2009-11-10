@@ -56,4 +56,12 @@ public class RingtoneNotifier extends Notifier {
 		}
 	}
 
+	/* (non-Javadoc)
+	 * @see com.ccmtc.android.droidguard.Notifier#getType()
+	 */
+	@Override
+	public int getType() {
+		return NotifierManager.NOTIFIER_TYPE_RINGTONE;
+	}
+
 }
