@@ -14,7 +14,9 @@ import android.util.Log;
  */
 public class DroidGuardService extends Service implements DetectorEventListener {
 
-	private static final String logTag = "DetectorTest";
+	public static final String EXTRA_STOP_SERVICE = "com.ccmtc.android.droidguard.StopService";
+
+	private static final String logTag = "DroidGuardService";
 
 	private Detector[] detectors;
 	private Notifier[] notifiers;
@@ -34,15 +36,15 @@ public class DroidGuardService extends Service implements DetectorEventListener 
 	public void onCreate() {
 		super.onCreate();
 
-		 // Set detector and notifier for debugging.
-		 PrefStore.resetAll(this);
-		 PrefStore.toggleDetector(this,
-		 DetectorManager.DETECTOR_TYPE_ORIENTATION, true);
-		 PrefStore.setDetectorSensitivity(this,
-		 DetectorManager.DETECTOR_TYPE_ORIENTATION,
-		 Detector.DETECTOR_CHANGELEVEL_MEDIUM);
-		 PrefStore.toggleNotifier(this,
-		 NotifierManager.NOTIFIER_TYPE_RINGTONE, true);
+		// Set detector and notifier for debugging.
+		PrefStore.resetAll(this);
+		PrefStore.toggleDetector(this,
+				DetectorManager.DETECTOR_TYPE_ORIENTATION, true);
+		PrefStore.setDetectorSensitivity(this,
+				DetectorManager.DETECTOR_TYPE_ORIENTATION,
+				Detector.DETECTOR_CHANGELEVEL_MEDIUM);
+		PrefStore.toggleNotifier(this, NotifierManager.NOTIFIER_TYPE_RINGTONE,
+				true);
 
 		// Initialize detectors.
 		detectors = new Detector[DetectorManager.DETECTOR_COUNT];
@@ -69,6 +71,11 @@ public class DroidGuardService extends Service implements DetectorEventListener 
 	@Override
 	public void onStart(Intent intent, int startId) {
 		super.onStart(intent, startId);
+		// TODO Find a better way.
+		if (1 != startId) {
+			stopSelf();
+			return;
+		}
 		startAllDetectors();
 		super.setForeground(true);
 		Log.d(logTag, "Service started.");

@@ -23,9 +23,11 @@ public class SysNotification {
 		Notification notification = new Notification(R.drawable.icon, context
 				.getText(R.string.notification_service_running), System
 				.currentTimeMillis());
-		Intent intent = new Intent();
-		PendingIntent contentIntent = PendingIntent.getActivity(context, 0,
+		Intent intent = new Intent(context, DroidGuardService.class);
+		PendingIntent contentIntent = PendingIntent.getService(context, 0,
 				intent, 0);
+		notification.flags = Notification.FLAG_ONGOING_EVENT
+				| Notification.FLAG_NO_CLEAR;
 		notification.setLatestEventInfo(context, context
 				.getText(R.string.app_name), context
 				.getText(R.string.notification_service_running), contentIntent);
