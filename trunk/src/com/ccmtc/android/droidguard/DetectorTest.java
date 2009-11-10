@@ -37,6 +37,7 @@ public class DetectorTest extends Activity implements DetectorEventListener {
 		detector = new AccelerometerDetector(this);
 		detector.registerListener(this);
 		notifier = new RingtoneNotifier(this);
+		SysNotification.Set(this);
 	}
 
 	@Override
@@ -68,5 +69,6 @@ public class DetectorTest extends Activity implements DetectorEventListener {
 	public void onDestroy() {
 		detector.stop();
 		super.onDestroy();
+		SysNotification.Unset(this);
 	}
 }

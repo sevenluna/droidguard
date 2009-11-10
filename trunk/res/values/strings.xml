@@ -2,10 +2,10 @@
 <resources>
     <string name="hello">Hello World, DroidGuard!</string>
     <string name="app_name">DroidGuard</string>
-
-    <string name="alt_ways">报警方式</string>
-    <string name="alt_ways_ring">响铃</string>
-    <string name="alt_ways_vib">震动</string>
-    <string name="sensitivity ">灵敏度</string>
-    <string name="wait_time">等待时间</string>
+	<string name="notification_service_running">DroidGuard is guarding your phone.</string>
+    <string name="alt_ways">Alert methods</string>
+    <string name="alt_ways_ring">Ringtone</string>
+    <string name="alt_ways_vib">Vibration</string>
+    <string name="sensitivity ">Sensitivity</string>
+    <string name="wait_time">Prepare time</string>
 </resources>
