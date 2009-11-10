@@ -15,12 +15,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.Gallery;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.SeekBar;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 
 public class DroidGuard extends Activity {
@@ -30,6 +32,8 @@ public class DroidGuard extends Activity {
 	protected static final int LISTITEM_SEN_DIALOG = 0;
 	protected static final int DIALOG_ALT_ID = 1;
 	protected static final int LISTITEM_ALT_DIALOG = 1;
+	protected static final int LISTITEM_ABOUT_DIALOG = 2;
+	protected static final int DIALOG_ABOUT_ID = 2;
 
 	/** Called when the activity is first created. */
 	
@@ -41,9 +45,10 @@ public class DroidGuard extends Activity {
     	    ListView list = (ListView) findViewById(R.id.lvSettings);   
     	       
     	    SimpleAdapter sa = CreatSettingList();
+    	    
     	    list.setAdapter(sa);   
     	    
-    	   // list.setChoiceMode(CHOICE_MODE_SINGLE);
+    	  
 
             list.setOnItemClickListener(
             		new AdapterView.OnItemClickListener(){
@@ -59,6 +64,9 @@ public class DroidGuard extends Activity {
 					case LISTITEM_ALT_DIALOG:
 						showDialog(DIALOG_ALT_ID);
 						break;
+					case LISTITEM_ABOUT_DIALOG:
+						showDialog(DIALOG_ABOUT_ID);
+						break;
 					default:
 						;
 					}	
@@ -67,7 +75,8 @@ public class DroidGuard extends Activity {
 				}
             });
         
-        
+
+
     }
     
     /* 对话框生成器
@@ -80,7 +89,7 @@ public class DroidGuard extends Activity {
         switch(id) {
         case DIALOG_SENSITIVITY_ID:
             
-        	Context mContext = getApplicationContext();
+        	final Context mContext = getApplicationContext();
         	LayoutInflater inflater = 
         		(LayoutInflater) mContext.getSystemService(LAYOUT_INFLATER_SERVICE);
         	View contentlayout = 
@@ -92,11 +101,12 @@ public class DroidGuard extends Activity {
         	image.setImageResource(R.drawable.icon);
         	
         	SeekBar sb = (SeekBar)contentlayout.findViewById(R.id.seekBar);
-        	sb.setMax(4);
-        	sb.setProgress(2);
+        	sb.setMax(Detector.DETECTOR_CHANGELEVEL_SIGNIFICANT);
+        	sb.setProgress(PrefStore.getDetectorSensitivity(mContext, DetectorManager.DETECTOR_TYPE_ACCELEMETER));
         	sb.setOnSeekBarChangeListener(new OnSeekBarChangeListener(){
         		public void onProgressChanged(SeekBar s, int progress, boolean touch){
-        			Log.d("seekbar",""+progress);
+        			PrefStore.setDetectorSensitivity(mContext, DetectorManager.DETECTOR_TYPE_ACCELEMETER, progress);
+        			Log.d("seekbar",""+progress);			
         		}
 
 				@Override
@@ -147,7 +157,34 @@ public class DroidGuard extends Activity {
 					Toast.makeText(getApplicationContext(), items[which], Toast.LENGTH_SHORT).show();
 				}
         	});      	
-        	return builder.create();        	
+        	return builder.create();      
+        	
+        case DIALOG_ABOUT_ID:
+          	Context abContext = getApplicationContext();
+        	LayoutInflater abInflater = 
+        		(LayoutInflater) abContext.getSystemService(LAYOUT_INFLATER_SERVICE);
+        	View ablayout = 
+        		abInflater.inflate(R.layout.about_dialog,
+        	                               (ViewGroup) findViewById(R.id.abLayoutDlg));
+        	
+        	Gallery ga = (Gallery)ablayout.findViewById(R.id.gallery);
+
+            ga.setAdapter(new ImageAdapter(this));
+
+            ga.setOnItemClickListener(new OnItemClickListener() {
+                public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
+                    Toast.makeText(DroidGuard.this, "" + position, Toast.LENGTH_SHORT).show();
+                }
+            });
+            
+        	builder = new AlertDialog.Builder(this);
+        	builder.setTitle("About us")
+        	.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                	//关闭about
+                }
+            });
+            return builder.create(); 
         default:
             return null;
         }
