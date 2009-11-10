@@ -20,6 +20,7 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.SeekBar;
 import android.widget.SimpleAdapter;
+import android.widget.TextView;
 
 import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
@@ -146,8 +147,8 @@ public class DroidGuard extends Activity {
 			builder.setTitle(R.string.sensitivity).setPositiveButton("OK",
 					new DialogInterface.OnClickListener() {
 						public void onClick(DialogInterface dialog, int id) {
-//							TextView lv = (TextView)contentlayout.findViewById(R.id.CurrentOp);
-//							lv.setText(currentSen);
+						TextView lv = (TextView)contentlayout.findViewById(R.id.CurrentOp);
+						lv.setText(currentSen);
 							
 						}
 					})
