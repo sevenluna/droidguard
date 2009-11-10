@@ -69,7 +69,7 @@ public class DroidGuard extends Activity {
 					int poid = av.getSelectedItemPosition();
 					
 					Log.v("position","click at"+poid);
-					//showDialog(DIALOG_SENSITIVITY_ID);
+					showDialog(DIALOG_SENSITIVITY_ID);
 				}
             });
         

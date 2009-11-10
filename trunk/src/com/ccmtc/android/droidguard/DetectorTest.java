@@ -39,7 +39,7 @@ public class DetectorTest extends Activity implements DetectorEventListener {
 
 		PrefStore.toggleDetector(this,
 				DetectorManager.DETECTOR_TYPE_ORIENTATION, true);
-		detectors = new Detector[DetectorManager.DETECTOR_TYPE_COUNT];
+		detectors = new Detector[DetectorManager.DETECTOR_COUNT];
 		for (int i = 0; i < detectors.length; i++) {
 			if (PrefStore.isDetectorSelected(this, i)) {
 				Log.d("DetectorTest", "detector " + i + " is selected.");
@@ -53,6 +53,9 @@ public class DetectorTest extends Activity implements DetectorEventListener {
 		SysNotification.Set(this);
 	}
 
+	/* (non-Javadoc)
+	 * @see com.ccmtc.android.droidguard.DetectorEventListener#onDetectorChangeDetected(com.ccmtc.android.droidguard.DetectorEvent)
+	 */
 	@Override
 	public void onDetectorChangeDetected(DetectorEvent event) {
 		TextView text = (TextView) findViewById(R.id.text);
