@@ -36,11 +36,16 @@ public class DetectorTest extends Activity implements DetectorEventListener {
 				}
 			}
 		});
-		
+
+		PrefStore.toggleDetector(this,
+				DetectorManager.DETECTOR_TYPE_ORIENTATION, true);
 		detectors = new Detector[DetectorManager.DETECTOR_TYPE_COUNT];
 		for (int i = 0; i < detectors.length; i++) {
-			detectors[i] = DetectorManager.createDetector(this, i);
-			detectors[i].registerListener(this);
+			if (PrefStore.isDetectorSelected(this, i)) {
+				Log.d("DetectorTest", "detector " + i + " is selected.");
+				detectors[i] = DetectorManager.createDetector(this, i);
+				detectors[i].registerListener(this);
+			}
 		}
 		// detector = new AccelerometerDetector(this);
 		// detector.registerListener(this);
