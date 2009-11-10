@@ -17,7 +17,9 @@ import android.widget.TextView;
  */
 public class DetectorTest extends Activity implements DetectorEventListener {
 
-	private Detector detector;
+	private Detector[] detectors;
+
+	// private Detector detector;
 	private Notifier notifier;
 
 	/** Called when the activity is first created. */
@@ -34,8 +36,14 @@ public class DetectorTest extends Activity implements DetectorEventListener {
 				}
 			}
 		});
-		detector = new AccelerometerDetector(this);
-		detector.registerListener(this);
+		
+		detectors = new Detector[DetectorManager.DETECTOR_TYPE_COUNT];
+		for (int i = 0; i < detectors.length; i++) {
+			detectors[i] = DetectorManager.createDetector(this, i);
+			detectors[i].registerListener(this);
+		}
+		// detector = new AccelerometerDetector(this);
+		// detector.registerListener(this);
 		notifier = new RingtoneNotifier(this);
 		SysNotification.Set(this);
 	}
@@ -45,8 +53,8 @@ public class DetectorTest extends Activity implements DetectorEventListener {
 		TextView text = (TextView) findViewById(R.id.text);
 		Log.d("detectTest", "Level changed to(" + System.currentTimeMillis()
 				+ "): " + event.changeLevel);
-		text.setText("Level changed to(" + System.currentTimeMillis() + "): "
-				+ event.changeLevel);
+		text.setText("Level changed to " + event.changeLevel
+				+ ". Source type: " + event.sourceType);
 		if (event.changeLevel > Detector.DETECTOR_CHANGELEVEL_MEDIUM
 				&& notifier.canExecute()) {
 			notifier.execute();
@@ -56,19 +64,35 @@ public class DetectorTest extends Activity implements DetectorEventListener {
 	@Override
 	public void onResume() {
 		super.onResume();
-		detector.start();
+		startAllDetectors();
 	}
 
 	@Override
 	public void onStop() {
-		detector.stop();
+		stopAllDetectors();
 		super.onStop();
 	}
 
 	@Override
 	public void onDestroy() {
-		detector.stop();
+		stopAllDetectors();
 		super.onDestroy();
 		SysNotification.Unset(this);
+	}
+
+	private void startAllDetectors() {
+		for (Detector detector : detectors) {
+			if (null != detector) {
+				detector.start();
+			}
+		}
+	}
+
+	private void stopAllDetectors() {
+		for (Detector detector : detectors) {
+			if (null != detector) {
+				detector.stop();
+			}
+		}
 	}
 }

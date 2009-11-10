@@ -4,6 +4,7 @@
 package com.ccmtc.android.droidguard;
 
 import java.util.List;
+
 import android.content.Context;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -12,12 +13,12 @@ import android.hardware.SensorManager;
 import android.util.Log;
 
 /**
- * This detector uses the accelerometer sensor to detect environment changes.
+ * This detector uses the orientation sensor to detect environment changes.
  * 
  * @author Ken
  * 
  */
-public class AccelerometerDetector extends Detector implements
+public class OrientationDetector extends Detector implements
 		SensorEventListener {
 
 	private final SensorManager sensorMgr;
@@ -27,12 +28,12 @@ public class AccelerometerDetector extends Detector implements
 	private int retrieved = 0;
 
 	/**
-	 * Create a new instance of {@link AccelerometerDetector}. Do NOT call this
+	 * Create a new instance of {@link OrientationDetector}. Do NOT call this
 	 * directly - use DetectorManager.createDetector() instead.
 	 * 
 	 * @param context The context of this detector.
 	 */
-	public AccelerometerDetector(Context context) {
+	public OrientationDetector(Context context) {
 		super(context);
 		sensorMgr = (SensorManager) context
 				.getSystemService(android.content.Context.SENSOR_SERVICE);
@@ -45,7 +46,39 @@ public class AccelerometerDetector extends Detector implements
 	 */
 	@Override
 	public int getType() {
-		return DetectorManager.DETECTOR_TYPE_ACCELEMETER;
+		return DetectorManager.DETECTOR_TYPE_ORIENTATION;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.ccmtc.android.droidguard.Detector#start()
+	 */
+	@Override
+	public boolean start() {
+		List<Sensor> oriSensors = sensorMgr
+				.getSensorList(Sensor.TYPE_ORIENTATION);
+		for (Sensor sensor : oriSensors) {
+			boolean res = sensorMgr.registerListener(this, sensor,
+					SensorManager.SENSOR_DELAY_NORMAL);
+			Log.d("OrientationDetector", "orientation sensor registered: "
+					+ res);
+			if (!res) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.ccmtc.android.droidguard.Detector#stop()
+	 */
+	@Override
+	public boolean stop() {
+		sensorMgr.unregisterListener(this);
+		return true;
 	}
 
 	/*
@@ -70,7 +103,7 @@ public class AccelerometerDetector extends Detector implements
 	@Override
 	public void onSensorChanged(SensorEvent event) {
 		synchronized (this) {
-			if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
+			if (event.sensor.getType() == Sensor.TYPE_ORIENTATION) {
 				if (retrieved == 0) {
 					originalValues = event.values.clone();
 					++retrieved;
@@ -122,58 +155,19 @@ public class AccelerometerDetector extends Detector implements
 	 */
 	private int digitToChangeLevel(float distance) {
 		float positiveDistance = Math.abs(distance);
-		if (positiveDistance < 0.2) {
+		if (positiveDistance < 1.1) {
 			return Detector.DETECTOR_CHANGELEVEL_TINY;
 		}
-		if (positiveDistance < 0.5) {
+		if (positiveDistance < 2) {
 			return Detector.DETECTOR_CHANGELEVEL_LOW;
 		}
-		if (positiveDistance < 1) {
+		if (positiveDistance < 3) {
 			return Detector.DETECTOR_CHANGELEVEL_MEDIUM;
 		}
-		if (positiveDistance < 3) {
+		if (positiveDistance < 5) {
 			return Detector.DETECTOR_CHANGELEVEL_HIGH;
 		}
 		return Detector.DETECTOR_CHANGELEVEL_SIGNIFICANT;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.ccmtc.android.droidguard.Detector#start()
-	 */
-	@Override
-	public boolean start() {
-		// try {
-		// Log.i("main", "starting...");
-		// Thread.sleep(1000);
-		// Log.i("main", "started");
-		// } catch (InterruptedException e) {
-		// // TODO Auto-generated catch block
-		// e.printStackTrace();
-		// }
-		List<Sensor> accSensors = sensorMgr
-				.getSensorList(Sensor.TYPE_ACCELEROMETER);
-		for (Sensor sensor : accSensors) {
-			boolean res = sensorMgr.registerListener(this, sensor,
-					SensorManager.SENSOR_DELAY_NORMAL);
-			Log.d("AccelemeterDetector", "accelerometer sensor registered: "
-					+ res);
-			if (!res) {
-				return false;
-			}
-		}
-		return true;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.ccmtc.android.droidguard.Detector#stop()
-	 */
-	@Override
-	public boolean stop() {
-		sensorMgr.unregisterListener(this);
-		return true;
-	}
 }
