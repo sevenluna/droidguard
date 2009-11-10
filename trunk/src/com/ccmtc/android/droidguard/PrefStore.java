@@ -209,7 +209,7 @@ public class PrefStore {
 			return "";
 		}
 		String result = Integer.toString(values[0]);
-		for (int i = 0; i < values.length; i++) {
+		for (int i = 1; i < values.length; i++) {
 			result += "|" + values[i];
 		}
 		return result;
