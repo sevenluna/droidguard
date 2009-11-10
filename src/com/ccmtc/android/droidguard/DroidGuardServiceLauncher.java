@@ -18,5 +18,6 @@ public class DroidGuardServiceLauncher extends Activity {
 		super.onCreate(savedInstanceState);
 		startService(new Intent(this,
 				com.ccmtc.android.droidguard.DroidGuardService.class));
+		finish();
 	}
 }
