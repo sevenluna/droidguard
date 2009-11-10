@@ -67,8 +67,20 @@ public class PrefStore {
 	 *            The context of the call.
 	 * @return The {@link SharedPreferences} retrieved.
 	 */
-	static SharedPreferences getSharedPreferences(Context context) {
+	private static SharedPreferences getSharedPreferences(Context context) {
 		return PreferenceManager.getDefaultSharedPreferences(context);
+	}
+
+	public static void resetAll(Context context) {
+		getSharedPreferences(context).edit()
+				.putInt(PREF_START_GUARD_WAIT_SECONDS,
+						DEFAULT_START_GUARD_WAIT_SECONDS).putLong(
+						PREF_SELECTED_DETECTORS, DEFAULT_SELECTED_DETECTORS)
+				.putString(PREF_DETECTOR_SENSITIVITIES,
+						DEFAULT_DETECTOR_SENSITIVITIES).putLong(
+						PREF_SELECTED_NOTIFIERS, DEFAULT_SELECTED_NOTIFIERS)
+				.commit();
+
 	}
 
 	/**
@@ -171,6 +183,10 @@ public class PrefStore {
 	 *         {@code null} is returned.
 	 */
 	private static int[] parseInts(String value) {
+		if (value.trim() == "") {
+			return new int[0];
+		}
+
 		String[] splitValues = value.split("\\|");
 		int[] result = new int[splitValues.length];
 		for (int i = 0; i < result.length; i++) {
@@ -278,7 +294,7 @@ public class PrefStore {
 			boolean value) {
 		long selectedNotifiers = getBitwiseSelectedNotifiers(context);
 		getSharedPreferences(context).edit().putLong(
-				PREF_SELECTED_DETECTORS,
+				PREF_SELECTED_NOTIFIERS,
 				value ? selectedNotifiers | typeToBitwise(notifierType)
 						: selectedNotifiers & ~typeToBitwise(notifierType))
 				.commit();

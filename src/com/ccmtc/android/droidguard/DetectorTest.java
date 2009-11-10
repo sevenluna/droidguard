@@ -17,55 +17,88 @@ import android.widget.TextView;
  */
 public class DetectorTest extends Activity implements DetectorEventListener {
 
+	private static final String logTag = "DetectorTest";
+
 	private Detector[] detectors;
+	private Notifier[] notifiers;
+
+	TextView text;
 
 	// private Detector detector;
-	private Notifier notifier;
+	// private Notifier notifier;
 
 	/** Called when the activity is first created. */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.detectortest);
+		text = (TextView) findViewById(R.id.text);
 		Button stopButton = (Button) findViewById(R.id.stop);
 		stopButton.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				if (null != notifier) {
-					notifier.stop();
+				for (Notifier notifier : notifiers) {
+					if (null != notifier) {
+						notifier.stop();
+					}
 				}
 			}
 		});
 
+		// Set detector and notifier for debugging.
+		PrefStore.resetAll(this);
 		PrefStore.toggleDetector(this,
 				DetectorManager.DETECTOR_TYPE_ORIENTATION, true);
+		PrefStore.setDetectorSensitivity(this,
+				DetectorManager.DETECTOR_TYPE_ORIENTATION,
+				Detector.DETECTOR_CHANGELEVEL_MEDIUM);
+		PrefStore.toggleNotifier(this,
+				NotifierManager.NOTIFIER_TYPE_VIBERATION, true);
+
+		// Initialize detectors.
 		detectors = new Detector[DetectorManager.DETECTOR_COUNT];
 		for (int i = 0; i < detectors.length; i++) {
 			if (PrefStore.isDetectorSelected(this, i)) {
-				Log.d("DetectorTest", "detector " + i + " is selected.");
+				Log.d(logTag, "detector " + i + " is selected.");
 				detectors[i] = DetectorManager.createDetector(this, i);
 				detectors[i].registerListener(this);
 			}
 		}
-		// detector = new AccelerometerDetector(this);
-		// detector.registerListener(this);
-		notifier = new RingtoneNotifier(this);
+
+		// Initialize notifiers.
+		notifiers = new Notifier[NotifierManager.NOTIFIER_COUNT];
+		for (int i = 0; i < detectors.length; i++) {
+			if (PrefStore.isNotifierSelected(this, i)) {
+				Log.d(logTag, "notifier " + i + " is selected.");
+				notifiers[i] = NotifierManager.createNotifier(this, i);
+			}
+		}
+
+		// notifier = new RingtoneNotifier(this);
 		SysNotification.Set(this);
 	}
 
-	/* (non-Javadoc)
-	 * @see com.ccmtc.android.droidguard.DetectorEventListener#onDetectorChangeDetected(com.ccmtc.android.droidguard.DetectorEvent)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * com.ccmtc.android.droidguard.DetectorEventListener#onDetectorChangeDetected
+	 * (com.ccmtc.android.droidguard.DetectorEvent)
 	 */
 	@Override
 	public void onDetectorChangeDetected(DetectorEvent event) {
-		TextView text = (TextView) findViewById(R.id.text);
-		Log.d("detectTest", "Level changed to(" + System.currentTimeMillis()
-				+ "): " + event.changeLevel);
-		text.setText("Level changed to " + event.changeLevel
-				+ ". Source type: " + event.sourceType);
-		if (event.changeLevel > Detector.DETECTOR_CHANGELEVEL_MEDIUM
-				&& notifier.canExecute()) {
-			notifier.execute();
+		Log.d(logTag, "ChangeLevel: " + event.changeLevel);
+		text.setText("ChangeLevel: " + event.changeLevel + ". Source type: "
+				+ event.sourceType);
+
+		if (event.changeLevel >= PrefStore.getDetectorSensitivity(this,
+				event.sourceType)) {
+			for (int i = 0; i < NotifierManager.NOTIFIER_COUNT; i++) {
+				if (null != notifiers[i] && notifiers[i].canExecute()) {
+					Log.d(logTag, "executing notifier " + i);
+					notifiers[i].execute();
+				}
+			}
 		}
 	}
 

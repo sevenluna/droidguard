@@ -22,6 +22,9 @@ public final class NotifierManager {
 		case NOTIFIER_TYPE_RINGTONE:
 			return new RingtoneNotifier(context);
 			// break;
+		case NOTIFIER_TYPE_VIBERATION:
+			return new VibrationNotifier(context);
+			// break;
 		default:
 			return null;
 			// break;
