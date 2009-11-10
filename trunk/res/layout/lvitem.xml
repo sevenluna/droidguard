@@ -1,22 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-  xmlns:android="http://schemas.android.com/apk/res/android"
-  android:layout_width="fill_parent"
-  android:layout_height="wrap_content"
-  android:paddingBottom="3dip"    
-  android:paddingLeft="10dip" 
-  android:id="@+id/MyLvItem"
-  android:orientation="vertical">
-        <TextView    
-                android:layout_height="wrap_content"    
-                android:layout_width="fill_parent"    
-                android:id="@+id/ItemTitle"    
-                android:textSize="30dip">  
-        </TextView>  
-        <TextView    
-                android:layout_height="wrap_content"    
-                android:layout_width="fill_parent"    
-                android:id="@+id/ItemText">  
-        </TextView>  
-  
-</LinearLayout>
+<RelativeLayout    
+         android:id="@+id/RelativeLayout01"    
+         android:layout_width="fill_parent"    
+         xmlns:android="http://schemas.android.com/apk/res/android"    
+         android:layout_height="wrap_content"    
+         android:paddingBottom="4dip"    
+         android:paddingLeft="12dip">  
+         <ImageView    
+               android:layout_width="wrap_content"    
+               android:layout_height="wrap_content"    
+               android:id="@+id/ItemImage">    
+         </ImageView>  
+         <TextView    
+               android:text="TextView01"    
+               android:layout_height="wrap_content"    
+               android:textSize="30dip"    
+               android:layout_width="fill_parent"    
+               android:layout_toRightOf="@+id/ItemImage"    
+               android:id="@+id/OpTitle">  
+         </TextView>  
+         <TextView    
+               android:text="TextView02"    
+               android:layout_height="wrap_content"    
+               android:layout_width="fill_parent"    
+               android:layout_toRightOf="@+id/ItemImage"    
+               android:layout_below="@+id/OpTitle"    
+               android:id="@+id/CurrentOp">  
+         </TextView>  
+</RelativeLayout>  
+
+
+
