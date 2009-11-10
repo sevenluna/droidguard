@@ -63,7 +63,7 @@ public class DroidGuard extends Activity {
 			public void onItemClick(AdapterView<?> av, View view, int pos,
 					long viewId) {
 				// TODO Auto-generated method stub
-				Log.d("before", "before swtich");
+
 				switch (pos) {
 				case LISTITEM_SEN_DIALOG:
 					showDialog(DIALOG_SENSITIVITY_ID);
@@ -102,7 +102,7 @@ public class DroidGuard extends Activity {
 			final Context mContext = getApplicationContext();
 			LayoutInflater inflater = (LayoutInflater) mContext
 					.getSystemService(LAYOUT_INFLATER_SERVICE);
-			View contentlayout = inflater.inflate(R.layout.sen_dialog,
+			final View contentlayout = inflater.inflate(R.layout.sen_dialog,
 					(ViewGroup) findViewById(R.id.layoutDlg));
 
 			ImageView image = (ImageView) contentlayout
@@ -123,6 +123,9 @@ public class DroidGuard extends Activity {
 							.setDetectorSensitivity(mContext,
 									DetectorManager.DETECTOR_TYPE_ORIENTATION,
 									progress);
+					
+					
+					
 					Log.d("seekbar", "" + progress);
 				}
 
@@ -143,9 +146,12 @@ public class DroidGuard extends Activity {
 			builder.setTitle(R.string.sensitivity).setPositiveButton("OK",
 					new DialogInterface.OnClickListener() {
 						public void onClick(DialogInterface dialog, int id) {
-							// ±£¥Ê¡È√Ù∂»
+//							TextView lv = (TextView)contentlayout.findViewById(R.id.OpTitle);
+//							lv.setText(currentSen);
+							
 						}
-					}).setView(contentlayout);
+					})
+					.setView(contentlayout);
 
 			dialog = builder.create();
 			return dialog;
