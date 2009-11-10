@@ -8,6 +8,7 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.AlertDialog.Builder;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -19,6 +20,7 @@ import android.widget.ListView;
 import android.widget.SeekBar;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 
 public class DroidGuard extends Activity {
@@ -26,6 +28,8 @@ public class DroidGuard extends Activity {
     
 	public static final int DIALOG_SENSITIVITY_ID = 0;
 	protected static final int LISTITEM_SEN_DIALOG = 0;
+	protected static final int DIALOG_ALT_ID = 1;
+	protected static final int LISTITEM_ALT_DIALOG = 1;
 
 	/** Called when the activity is first created. */
 	
@@ -51,8 +55,12 @@ public class DroidGuard extends Activity {
 					switch(pos){
 					case LISTITEM_SEN_DIALOG:
 						showDialog(DIALOG_SENSITIVITY_ID);
-
 						break;
+					case LISTITEM_ALT_DIALOG:
+						showDialog(DIALOG_ALT_ID);
+						break;
+					default:
+						;
 					}	
 					
 					Log.d("position","click at "+pos);					
@@ -68,10 +76,10 @@ public class DroidGuard extends Activity {
     @Override
     protected Dialog onCreateDialog(int id) {
     	AlertDialog dialog;
+    	Builder builder;
         switch(id) {
         case DIALOG_SENSITIVITY_ID:
             
-        	Builder builder;
         	Context mContext = getApplicationContext();
         	LayoutInflater inflater = 
         		(LayoutInflater) mContext.getSystemService(LAYOUT_INFLATER_SERVICE);
@@ -105,12 +113,41 @@ public class DroidGuard extends Activity {
         	});
         	
         	builder = new AlertDialog.Builder(this);
-        	builder.setTitle(R.string.sensitivity);
-        	
-        	builder.setView(contentlayout);
+        	builder.setTitle(R.string.sensitivity)
+            .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                	//保存灵敏度
+                }
+            })
+        	.setView(contentlayout);
 
         	dialog = builder.create();
         	return dialog;
+        	
+        case DIALOG_ALT_ID:
+        	
+        	final CharSequence[] items = {"Ringtone", "Vibration", "Calling"};
+        	final boolean[] checkedItems = {true,false,false};
+        	
+        	
+        	
+        	builder = new AlertDialog.Builder(this);
+        	builder.setTitle("Alert ways")
+        	.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                	//确认，并保存checkedItems
+                }
+            });
+        	builder.setMultiChoiceItems(items, checkedItems, new DialogInterface.OnMultiChoiceClickListener() {
+				@Override
+				public void onClick(DialogInterface dialog, int which,
+						boolean isChecked) {
+					// TODO Auto-generated method stub
+					checkedItems[which] = isChecked;
+					Toast.makeText(getApplicationContext(), items[which], Toast.LENGTH_SHORT).show();
+				}
+        	});      	
+        	return builder.create();        	
         default:
             return null;
         }
@@ -138,17 +175,13 @@ private SimpleAdapter CreatSettingList(){
         map2.put("CurrentOp", ""); 
         mylist.add(map2);  
         
-	    return new SimpleAdapter(this, //没什么解释   
+	    return new SimpleAdapter(this,   
                 mylist,//数据来源    
                 R.layout.lvitem,//ListItem的XML实现   
                    
                 //动态数组与ListItem对应的子项           
                 new String[] {"ItemImage","OpTitle", "CurrentOp"},    
-                   
-                 
-                new int[] {R.id.ItemImage,R.id.OpTitle,R.id.CurrentOp});   
-
-        
+                new int[] {R.id.ItemImage,R.id.OpTitle,R.id.CurrentOp});      
 }
 
 private void InitSettings(){
