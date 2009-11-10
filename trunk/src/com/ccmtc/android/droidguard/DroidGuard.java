@@ -136,9 +136,14 @@ public class DroidGuard extends Activity {
         	
         case DIALOG_ALT_ID:
         	
-        	final CharSequence[] items = {"Ringtone", "Vibration", "Calling"};
-        	final boolean[] checkedItems = {true,false,false};
-        	
+        	final CharSequence[] items = new CharSequence[]{"Ringtone", "Vibration", "Calling"};
+        	final boolean[] checkedItems = new boolean[NotifierManager.NOTIFIER_COUNT];
+        	checkedItems[NotifierManager.NOTIFIER_TYPE_RINGTONE] = 
+        		PrefStore.isNotifierSelected(DroidGuard.this, NotifierManager.NOTIFIER_TYPE_RINGTONE);
+        	checkedItems[NotifierManager.NOTIFIER_TYPE_RINGTONE] = 
+        		PrefStore.isNotifierSelected(DroidGuard.this, NotifierManager.NOTIFIER_TYPE_VIBERATION);
+        	checkedItems[NotifierManager.NOTIFIER_TYPE_CALL]=
+        		PrefStore.isNotifierSelected(DroidGuard.this, NotifierManager.NOTIFIER_TYPE_CALL);
         	
         	
         	builder = new AlertDialog.Builder(this);
@@ -146,6 +151,7 @@ public class DroidGuard extends Activity {
         	.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int id) {
                 	//确认，并保存checkedItems
+                	
                 }
             });
         	builder.setMultiChoiceItems(items, checkedItems, new DialogInterface.OnMultiChoiceClickListener() {
@@ -153,7 +159,8 @@ public class DroidGuard extends Activity {
 				public void onClick(DialogInterface dialog, int which,
 						boolean isChecked) {
 					// TODO Auto-generated method stub
-					checkedItems[which] = isChecked;
+					PrefStore.toggleNotifier(DroidGuard.this, which, isChecked);
+					Log.d("toggle notify", "notify at " + which);
 					Toast.makeText(getApplicationContext(), items[which], Toast.LENGTH_SHORT).show();
 				}
         	});      	
@@ -221,8 +228,8 @@ private SimpleAdapter CreatSettingList(){
                 new int[] {R.id.ItemImage,R.id.OpTitle,R.id.CurrentOp});      
 }
 
-private void InitSettings(){
-	
-}
+//private void InitSettings(){
+//	
+//}
 
 }
