@@ -17,7 +17,9 @@ public final class DetectorManager {
 
 	public static final int DETECTOR_TYPE_ORIENTATION = 1;
 
-	public static final int DETECTOR_COUNT = 2;
+	public static final int DETECTOR_TYPE_WIFI = 2;
+
+	public static final int DETECTOR_COUNT = 3;
 
 	/**
 	 * Create a new detector.
@@ -35,6 +37,8 @@ public final class DetectorManager {
 			// break;
 		case DETECTOR_TYPE_ORIENTATION:
 			return new OrientationDetector(context);
+		case DETECTOR_TYPE_WIFI:
+			return new WifiDetector(context);
 			// break;
 		default:
 			return new EmptyDetector(context, type);

@@ -4,6 +4,7 @@
 package com.ccmtc.android.droidguard;
 
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
 import android.os.IBinder;
 import android.util.Log;
@@ -103,6 +104,14 @@ public class DroidGuardService extends Service implements DetectorEventListener 
 				}
 			}
 		}
+	}
+	
+	static void start(Context ctx, Intent intent) {
+		ctx.startService(intent);
+	}
+	
+	static void stop(Context ctx, Intent intent) {
+		ctx.stopService(intent);
 	}
 
 	private void startAllDetectors() {
