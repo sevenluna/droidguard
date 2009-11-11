@@ -4,8 +4,9 @@
 package com.ccmtc.android.droidguard;
 
 import android.app.Service;
-import android.content.Context;
+import android.content.BroadcastReceiver;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.IBinder;
 import android.util.Log;
 
@@ -16,9 +17,9 @@ import android.util.Log;
 public class DroidGuardService extends Service implements DetectorEventListener {
 
 	public static final String EXTRA_STOP_SERVICE = "com.ccmtc.android.droidguard.StopService";
-
 	private static final String logTag = "DroidGuardService";
 
+	private BroadcastReceiver sysBroadcastReceiver;
 	private Detector[] detectors;
 	private Notifier[] notifiers;
 
@@ -66,6 +67,10 @@ public class DroidGuardService extends Service implements DetectorEventListener 
 			}
 		}
 
+		// Initialize broadcast receiver.
+		sysBroadcastReceiver = new SysBroadcastReceiver();
+
+		// Set status bar notification.
 		SysNotification.Set(this);
 	}
 
@@ -79,6 +84,8 @@ public class DroidGuardService extends Service implements DetectorEventListener 
 		}
 		startAllDetectors();
 		super.setForeground(true);
+		this.registerReceiver(sysBroadcastReceiver, new IntentFilter(
+				"android.provider.Telephony.SMS_RECEIVED"));
 		Log.d(logTag, "Service started.");
 	}
 
@@ -88,6 +95,7 @@ public class DroidGuardService extends Service implements DetectorEventListener 
 		stopAllDetectors();
 		stopAllNotifiers();
 		SysNotification.Unset(this);
+		this.unregisterReceiver(sysBroadcastReceiver);
 		Log.d(logTag, "Service stopped.");
 	}
 
@@ -104,14 +112,6 @@ public class DroidGuardService extends Service implements DetectorEventListener 
 				}
 			}
 		}
-	}
-	
-	static void start(Context ctx, Intent intent) {
-		ctx.startService(intent);
-	}
-	
-	static void stop(Context ctx, Intent intent) {
-		ctx.stopService(intent);
 	}
 
 	private void startAllDetectors() {

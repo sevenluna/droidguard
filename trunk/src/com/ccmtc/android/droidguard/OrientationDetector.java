@@ -154,16 +154,16 @@ public class OrientationDetector extends Detector implements
 	 */
 	private int digitToChangeLevel(float distance) {
 		float positiveDistance = Math.abs(distance);
-		if (positiveDistance < 4) {
+		if (positiveDistance < 8) {
 			return Detector.DETECTOR_CHANGELEVEL_TINY;
 		}
-		if (positiveDistance < 11) {
+		if (positiveDistance < 20) {
 			return Detector.DETECTOR_CHANGELEVEL_LOW;
 		}
-		if (positiveDistance < 16) {
+		if (positiveDistance < 30) {
 			return Detector.DETECTOR_CHANGELEVEL_MEDIUM;
 		}
-		if (positiveDistance < 21) {
+		if (positiveDistance < 45) {
 			return Detector.DETECTOR_CHANGELEVEL_HIGH;
 		}
 		return Detector.DETECTOR_CHANGELEVEL_SIGNIFICANT;
