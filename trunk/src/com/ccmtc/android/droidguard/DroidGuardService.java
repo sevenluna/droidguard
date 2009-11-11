@@ -85,6 +85,7 @@ public class DroidGuardService extends Service implements DetectorEventListener 
 	public void onDestroy() {
 		super.onDestroy();
 		stopAllDetectors();
+		stopAllNotifiers();
 		SysNotification.Unset(this);
 		Log.d(logTag, "Service stopped.");
 	}
@@ -116,6 +117,14 @@ public class DroidGuardService extends Service implements DetectorEventListener 
 		for (Detector detector : detectors) {
 			if (null != detector) {
 				detector.stop();
+			}
+		}
+	}
+
+	private void stopAllNotifiers() {
+		for (Notifier notifier : notifiers) {
+			if (null != notifier) {
+				notifier.stop();
 			}
 		}
 	}

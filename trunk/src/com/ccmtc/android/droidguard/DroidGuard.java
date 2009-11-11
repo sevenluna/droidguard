@@ -124,10 +124,9 @@ public class DroidGuard extends Activity {
 							.setDetectorSensitivity(mContext,
 									DetectorManager.DETECTOR_TYPE_ORIENTATION,
 									progress);
-					
-					
-					
+
 					Log.d("seekbar", "" + progress);
+					currentSen = progress;
 				}
 
 				@Override
@@ -144,15 +143,18 @@ public class DroidGuard extends Activity {
 			});
 
 			builder = new AlertDialog.Builder(this);
-			builder.setTitle(R.string.sensitivity).setPositiveButton("OK",
-					new DialogInterface.OnClickListener() {
-						public void onClick(DialogInterface dialog, int id) {
-						TextView lv = (TextView)contentlayout.findViewById(R.id.CurrentOp);
-						lv.setText(currentSen);
-							
+			builder.setTitle(R.string.sensitivity)
+					.setPositiveButton("OK", new DialogInterface.OnClickListener(){
+
+
+						@Override
+						public void onClick(DialogInterface dialog, int which) {
+							// TODO Auto-generated method stub
+							TextView lv = (TextView) DroidGuard.this. findViewById(R.id.CurrentOp);
+							lv.setText(Integer.toString(currentSen));
 						}
-					})
-					.setView(contentlayout);
+
+						}).setView(contentlayout);
 
 			dialog = builder.create();
 			return dialog;
@@ -188,9 +190,8 @@ public class DroidGuard extends Activity {
 					"5 Seconds", "10 Seconds", "15 Seconds" };
 			builder = new AlertDialog.Builder(this);
 
-			builder.setTitle("Set waitting time") 
-			.setSingleChoiceItems(waits, currentWaits,
-					new DialogInterface.OnClickListener() {
+			builder.setTitle("Set waitting time").setSingleChoiceItems(waits,
+					currentWaits, new DialogInterface.OnClickListener() {
 						public void onClick(DialogInterface dialog, int item) {
 							Toast.makeText(getApplicationContext(),
 									waits[item], Toast.LENGTH_SHORT).show();
@@ -198,12 +199,12 @@ public class DroidGuard extends Activity {
 									item * 5);
 							dialog.dismiss();
 						}
-					})
-			 .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-           public void onClick(DialogInterface dialog, int id) {
-                dialog.cancel();
-           }
-       });
+					}).setNegativeButton("Cancel",
+					new DialogInterface.OnClickListener() {
+						public void onClick(DialogInterface dialog, int id) {
+							dialog.cancel();
+						}
+					});
 
 			return builder.create();
 
@@ -296,4 +297,6 @@ public class DroidGuard extends Activity {
 
 		currentWaits = PrefStore.getStartGuardWaitSeconds(DroidGuard.this);
 	}
+
+
 }
