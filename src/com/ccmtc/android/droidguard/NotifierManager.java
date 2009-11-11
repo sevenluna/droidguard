@@ -14,7 +14,7 @@ public final class NotifierManager {
 	public static final int NOTIFIER_TYPE_RINGTONE = 0;
 
 	public static final int NOTIFIER_TYPE_VIBERATION = 1;
-	
+
 	public static final int NOTIFIER_TYPE_CALL = 2;
 
 	public static final int NOTIFIER_COUNT = 3;
@@ -28,7 +28,7 @@ public final class NotifierManager {
 			return new VibrationNotifier(context);
 			// break;
 		default:
-			return null;
+			return new EmptyNotifier(context, type);
 			// break;
 		}
 	}
