@@ -18,7 +18,8 @@
                android:layout_width="fill_parent"    
                android:layout_toRightOf="@+id/ItemImage"    
                android:id="@+id/OpTitle">  
-         </TextView>  
+         </TextView> 
+          
          <TextView    
                android:text="TextView02"    
                android:layout_height="wrap_content"    
