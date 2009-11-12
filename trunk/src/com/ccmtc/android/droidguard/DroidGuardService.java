@@ -43,16 +43,6 @@ public class DroidGuardService extends Service implements DetectorEventListener 
 	public void onCreate() {
 		super.onCreate();
 
-		// Set detector and notifier for debugging.
-		PrefStore.resetAll(this);
-		PrefStore.toggleDetector(this,
-				DetectorManager.DETECTOR_TYPE_ORIENTATION, true);
-		PrefStore.setDetectorSensitivity(this,
-				DetectorManager.DETECTOR_TYPE_ORIENTATION,
-				Detector.DETECTOR_CHANGELEVEL_MEDIUM);
-		PrefStore.toggleNotifier(this, NotifierManager.NOTIFIER_TYPE_RINGTONE,
-				true);
-
 		initDetectors();
 		initNotifiers();
 		initSysBroadcastReceiver();
