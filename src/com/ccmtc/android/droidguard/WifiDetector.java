@@ -1,6 +1,5 @@
 package com.ccmtc.android.droidguard;
 
-import java.util.Date;
 import java.util.List;
 import java.util.Timer;
 
@@ -10,20 +9,21 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiManager;
-import android.widget.Button;
-import android.widget.TextView;
+import android.util.Log;
 
-public class WifiDetector extends Detector{
+public class WifiDetector extends Detector {
 	WifiManager mainWifi;
 	WifiReceiver receiverWifi;
-	List<ScanResult> wifiList;
+
 	int num;
 	Timer timer = new Timer();
+	Context mainContext;
 	List<ScanResult> wifiListResult;
-	
+
 	protected WifiDetector(Context context) {
 		super(context);
 		mainWifi = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
+		
 	}
 
 	@Override
@@ -33,50 +33,63 @@ public class WifiDetector extends Detector{
 
 	@Override
 	public boolean start() {
+		
 		receiverWifi = new WifiReceiver();
+		Log.d("Wifi-start", context.toString());
+		mainContext.registerReceiver(receiverWifi, new IntentFilter(
+				WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));
+		receiverWifi = new WifiReceiver();
+		Log.d("WifiDetector", mainWifi.toString());
+		// registerReceiver(receiverWifi, new
+		// IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));
 
-        //registerReceiver(receiverWifi, new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));
-		mainWifi.setWifiEnabled(true);
-        
-        
-        timer.schedule(new MyTask(),0,5000);
-      
-        
+		Log.d("WifiDetector", "WifiDetector On");
+		timer.schedule(new MyTask(), 0, 5000);
+
 		return true;
 	}
-	
 
-	class MyTask extends java.util.TimerTask{
+	class MyTask extends java.util.TimerTask {
 
-        @Override
-        public void run() {
-        	mainWifi.startScan();
-        }
-    }
+		@Override
+		public void run() {
+			mainWifi.startScan();
+
+		}
+	}
 
 	@Override
 	public boolean stop() {
-		// TODO Auto-generated method stub
-		return false;
+		timer.cancel();
+		mainContext.unregisterReceiver(receiverWifi);
+		return true;
 	}
-	
 
 	class WifiReceiver extends BroadcastReceiver {
-
+		@Override
 		public void onReceive(Context c, Intent intent) {
-			
-			num = 0;
-			wifiList = mainWifi.getScanResults();
+			List<ScanResult> wifiList;
+			String action = intent.getAction();
+			Log.d("Wifi_Receiver", "Receiver" + action);
+			Log.d("Wifi_Receiver", c.toString());
+			 if (intent.getAction().equals(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION)) {
+				 Log.d("Wifi_Receiver", "SCAN_RESULTS_AVAILABLE_ACTION");
+				 Log.d("Wifi_Receiver", mainWifi.toString());
+			 }
 
-			for (int i = 0; i < wifiList.size(); i++) {
-				
-				if (wifiList.get(i).level >= (-55)) {
-					num++;
-				}
-			}
 
-	
 			
+			// Log.d("Wifi", wifiList.toString());
+			// int num=0;
+			//        	
+			// for (int i = 0; i < wifiList.size(); i++) {
+			//				
+			// if (wifiList.get(i).level >= (-55)) {
+			// num++;
+			// Log.d("WifiDetector_num",new Integer(num).toString());
+			// }
+			// }
+
 		}
 	}
 
