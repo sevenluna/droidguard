@@ -21,12 +21,12 @@ public class IntentReceiver extends BroadcastReceiver {
 				.getBoolean(ENABLED, false)) {
 			return;
 		}
-		Log.d(logTag,new Boolean(PreferenceManager.getDefaultSharedPreferences(context)
-				.getBoolean(ENABLED, false)).toString());
-		Intent serv = new Intent(context, DroidGuardService.class);
-		serv.setAction(intent.getAction());
-		serv.putExtras(intent);
-		DroidGuardService.start(context, serv);
+//		Log.d(logTag,new Boolean(PreferenceManager.getDefaultSharedPreferences(context)
+//				.getBoolean(ENABLED, false)).toString());
+//		Intent serv = new Intent(context, DroidGuardService.class);
+//		serv.setAction(intent.getAction());
+//		serv.putExtras(intent);
+//		DroidGuardService.start(context, serv);
 		
 	}
 }
