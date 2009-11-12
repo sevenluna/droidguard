@@ -18,6 +18,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
@@ -149,9 +150,9 @@ public class DroidGuard extends Activity {
 						@Override
 						public void onClick(DialogInterface dialog, int which) {
 							// TODO Auto-generated method stub
-							TextView lv = (TextView) DroidGuard.this
+							TextView tvSen = (TextView) DroidGuard.this
 									.findViewById(R.id.CurrentOp);
-							lv.setText(Integer.toString(currentSen));
+							tvSen.setText(Integer.toString(currentSen));
 						}
 
 					}).setView(contentlayout);
@@ -165,8 +166,15 @@ public class DroidGuard extends Activity {
 			builder.setTitle("Alert ways").setPositiveButton("OK",
 					new DialogInterface.OnClickListener() {
 						public void onClick(DialogInterface dialog, int id) {
-							// 确认，并保存checkedItems
-
+							// 确认，并更新checkedItems
+							// TODO update item
+							ListView lv = (ListView) DroidGuard.this
+									.findViewById(R.id.lvSettings);
+							Object objAlt = lv.getChildAt(LISTITEM_ALT_DIALOG);
+							TextView tvCuAlt = (TextView) ((RelativeLayout) objAlt)
+									.getChildAt(2);
+							UpdateAlts();
+							tvCuAlt.setText(currentAlt);
 						}
 					});
 			builder.setMultiChoiceItems(items, checkedItems,
@@ -175,10 +183,11 @@ public class DroidGuard extends Activity {
 						public void onClick(DialogInterface dialog, int which,
 								boolean isChecked) {
 							// TODO Auto-generated method stub
-							Toast.makeText(getApplicationContext(),
-									items[which], Toast.LENGTH_SHORT).show();
+							// Toast.makeText(getApplicationContext(),
+							// items[which], Toast.LENGTH_SHORT).show();
 							PrefStore.toggleNotifier(DroidGuard.this, which,
 									isChecked);
+
 							Log.d("toggle notify", "notify at " + which);
 
 						}
@@ -191,12 +200,21 @@ public class DroidGuard extends Activity {
 			builder = new AlertDialog.Builder(this);
 
 			builder.setTitle("Set waitting time").setSingleChoiceItems(waits,
-					currentWaits, new DialogInterface.OnClickListener() {
+					currentWaits/5, new DialogInterface.OnClickListener() {
 						public void onClick(DialogInterface dialog, int item) {
 							Toast.makeText(getApplicationContext(),
 									waits[item], Toast.LENGTH_SHORT).show();
 							PrefStore.setStartGuardWaitSeconds(DroidGuard.this,
 									item * 5);
+
+							ListView lv = (ListView) DroidGuard.this
+									.findViewById(R.id.lvSettings);
+							Object objWaits = lv
+									.getChildAt(LISTITEM_WAIT_DIALOG);
+							TextView tvWaits = (TextView) ((RelativeLayout) objWaits)
+									.getChildAt(2);
+							tvWaits.setText(item * 5 + " seconds");
+
 							dialog.dismiss();
 						}
 					}).setNegativeButton("Cancel",
@@ -223,13 +241,12 @@ public class DroidGuard extends Activity {
 			lvabout.setOnItemClickListener(new OnItemClickListener() {
 				public void onItemClick(AdapterView<?> parent, View v,
 						int position, long id) {
-dismissDialog(DIALOG_ABOUT_ID);
+					dismissDialog(DIALOG_ABOUT_ID);
 				}
 			});
 
-			Builder aboutAlert = new AlertDialog.Builder(this)
-					.setTitle("About us")
-					.setView(ablayout);
+			Builder aboutAlert = new AlertDialog.Builder(this).setTitle(
+					"About us").setView(ablayout);
 
 			return aboutAlert.create();
 		default:
@@ -255,7 +272,7 @@ dismissDialog(DIALOG_ABOUT_ID);
 		HashMap<String, Object> map2 = new HashMap<String, Object>();
 		map2.put("ItemImage", R.drawable.icon);
 		map2.put("OpTitle", getText(R.string.wait_time));
-		map2.put("CurrentOp", "" + currentWaits+" seconds");
+		map2.put("CurrentOp", "" + currentWaits + " seconds");
 		mylist.add(map2);
 
 		HashMap<String, Object> map3 = new HashMap<String, Object>();
@@ -277,20 +294,7 @@ dismissDialog(DIALOG_ABOUT_ID);
 		currentSen = PrefStore.getDetectorSensitivity(DroidGuard.this,
 				DetectorManager.DETECTOR_TYPE_ACCELEMETER);
 
-		checkedItems[NotifierManager.NOTIFIER_TYPE_RINGTONE] = PrefStore
-				.isNotifierSelected(DroidGuard.this,
-						NotifierManager.NOTIFIER_TYPE_RINGTONE);
-		checkedItems[NotifierManager.NOTIFIER_TYPE_VIBERATION] = PrefStore
-				.isNotifierSelected(DroidGuard.this,
-						NotifierManager.NOTIFIER_TYPE_VIBERATION);
-		checkedItems[NotifierManager.NOTIFIER_TYPE_CALL] = PrefStore
-				.isNotifierSelected(DroidGuard.this,
-						NotifierManager.NOTIFIER_TYPE_CALL);
-
-		for (int i = 0; i < NotifierManager.NOTIFIER_COUNT; i++) {
-			if (checkedItems[i])
-				currentAlt += items[i] + " ";
-		}
+		UpdateAlts();
 
 		currentWaits = PrefStore.getStartGuardWaitSeconds(DroidGuard.this);
 	}
@@ -323,5 +327,24 @@ dismissDialog(DIALOG_ABOUT_ID);
 				// 动态数组与ListItem对应的子项
 				new String[] { "ItemImage", "OpTitle", "CurrentOp" },
 				new int[] { R.id.ItemImage, R.id.OpTitle, R.id.CurrentOp });
+	}
+
+	private String UpdateAlts() {
+		currentAlt = "";
+		checkedItems[NotifierManager.NOTIFIER_TYPE_RINGTONE] = PrefStore
+				.isNotifierSelected(DroidGuard.this,
+						NotifierManager.NOTIFIER_TYPE_RINGTONE);
+		checkedItems[NotifierManager.NOTIFIER_TYPE_VIBERATION] = PrefStore
+				.isNotifierSelected(DroidGuard.this,
+						NotifierManager.NOTIFIER_TYPE_VIBERATION);
+		checkedItems[NotifierManager.NOTIFIER_TYPE_CALL] = PrefStore
+				.isNotifierSelected(DroidGuard.this,
+						NotifierManager.NOTIFIER_TYPE_CALL);
+
+		for (int i = 0; i < NotifierManager.NOTIFIER_COUNT; i++) {
+			if (checkedItems[i] && !currentAlt.contains(items[i]))
+				currentAlt += items[i] + " ";
+		}
+		return currentAlt;
 	}
 }
