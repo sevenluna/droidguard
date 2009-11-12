@@ -1,15 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-	<string name="hello">Hello World, DroidGuard!</string>
-	<string name="app_name">DroidGuard</string>
-	<string name="notification_service_running">DroidGuard is guarding your phone.
-	</string>
-	<string name="alt_ways">Alert methods</string>
-	<string name="alt_ways_ring">Ringtone</string>
-	<string name="alt_ways_vib">Vibration</string>
-	<string name="sensitivity ">Sensitivity</string>
-	<string name="wait_time">Prepare time</string>
-	<string name="about_us">About</string>
-	<string name="notification_service_stopped">DroidGuard has stopped guarding. Click to
-		start it again.</string>
+    <string name="hello">Hello World, DroidGuard!</string>
+    <string name="app_name">DroidGuard</string>
+	<string name="notification_service_running">DroidGuard is guarding your phone.</string>
+    <string name="alt_ways">Alert methods</string>
+    <string name="alt_ways_ring">Ringtone</string>
+    <string name="alt_ways_vib">Vibration</string>
+    <string name="sensitivity ">Sensitivity</string>
+    <string name="wait_time">Prepare time</string>
+    <string name="about_us">About</string>
+<string name="notification_service_stopped">DroidGuard has stopped guarding. Click to start it again.</string>
 </resources>
