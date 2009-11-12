@@ -8,6 +8,7 @@ import android.content.BroadcastReceiver;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.IBinder;
+import android.telephony.TelephonyManager;
 import android.util.Log;
 
 /**
@@ -30,10 +31,14 @@ public class DroidGuardService extends Service implements DetectorEventListener 
 	 */
 	@Override
 	public IBinder onBind(Intent intent) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see android.app.Service#onCreate()
+	 */
 	@Override
 	public void onCreate() {
 		super.onCreate();
@@ -48,7 +53,38 @@ public class DroidGuardService extends Service implements DetectorEventListener 
 		PrefStore.toggleNotifier(this, NotifierManager.NOTIFIER_TYPE_RINGTONE,
 				true);
 
-		// Initialize detectors.
+		initDetectors();
+		initNotifiers();
+		initSysBroadcastReceiver();
+
+		// Set status bar notification.
+		SysNotification.Set(this, SysNotification.NOTIFICATION_RUNNING);
+	}
+
+	/**
+	 * Initialize broadcast receiver.
+	 */
+	private void initSysBroadcastReceiver() {
+		sysBroadcastReceiver = new SysBroadcastReceiver();
+	}
+
+	/**
+	 * Initialize notifiers.
+	 */
+	private void initNotifiers() {
+		notifiers = new Notifier[NotifierManager.NOTIFIER_COUNT];
+		for (int i = 0; i < detectors.length; i++) {
+			if (PrefStore.isNotifierSelected(this, i)) {
+				Log.d(logTag, "notifier " + i + " is selected.");
+				notifiers[i] = NotifierManager.createNotifier(this, i);
+			}
+		}
+	}
+
+	/**
+	 * Initialize detectors.
+	 */
+	private void initDetectors() {
 		detectors = new Detector[DetectorManager.DETECTOR_COUNT];
 		for (int i = 0; i < detectors.length; i++) {
 			if (PrefStore.isDetectorSelected(this, i)) {
@@ -57,35 +93,27 @@ public class DroidGuardService extends Service implements DetectorEventListener 
 				detectors[i].registerListener(this);
 			}
 		}
-
-		// Initialize notifiers.
-		notifiers = new Notifier[NotifierManager.NOTIFIER_COUNT];
-		for (int i = 0; i < detectors.length; i++) {
-			if (PrefStore.isNotifierSelected(this, i)) {
-				Log.d(logTag, "notifier " + i + " is selected.");
-				notifiers[i] = NotifierManager.createNotifier(this, i);
-			}
-		}
-
-		// Initialize broadcast receiver.
-		sysBroadcastReceiver = new SysBroadcastReceiver();
-
-		// Set status bar notification.
-		SysNotification.Set(this);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see android.app.Service#onStart(android.content.Intent, int)
+	 */
 	@Override
 	public void onStart(Intent intent, int startId) {
 		super.onStart(intent, startId);
-		// TODO Find a better way.
+		// TODO (G):Find a better way to determine intent.
 		if (1 != startId) {
 			stopSelf();
 			return;
 		}
-		startAllDetectors();
 		super.setForeground(true);
+		startAllDetectors();
 		this.registerReceiver(sysBroadcastReceiver, new IntentFilter(
 				"android.provider.Telephony.SMS_RECEIVED"));
+		this.registerReceiver(sysBroadcastReceiver, new IntentFilter(
+				TelephonyManager.ACTION_PHONE_STATE_CHANGED));
 		Log.d(logTag, "Service started.");
 	}
 
@@ -94,11 +122,18 @@ public class DroidGuardService extends Service implements DetectorEventListener 
 		super.onDestroy();
 		stopAllDetectors();
 		stopAllNotifiers();
-		SysNotification.Unset(this);
+		SysNotification.Unset(this, SysNotification.NOTIFICATION_RUNNING);
 		this.unregisterReceiver(sysBroadcastReceiver);
 		Log.d(logTag, "Service stopped.");
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * com.ccmtc.android.droidguard.DetectorEventListener#onDetectorChangeDetected
+	 * (com.ccmtc.android.droidguard.DetectorEvent)
+	 */
 	@Override
 	public void onDetectorChangeDetected(DetectorEvent event) {
 		Log.d(logTag, "ChangeLevel: " + event.changeLevel);
@@ -114,6 +149,9 @@ public class DroidGuardService extends Service implements DetectorEventListener 
 		}
 	}
 
+	/**
+	 * Start all selected detectors.
+	 */
 	private void startAllDetectors() {
 		for (Detector detector : detectors) {
 			if (null != detector) {
@@ -122,6 +160,9 @@ public class DroidGuardService extends Service implements DetectorEventListener 
 		}
 	}
 
+	/**
+	 * Stop all selected detectors.
+	 */
 	private void stopAllDetectors() {
 		for (Detector detector : detectors) {
 			if (null != detector) {
@@ -130,6 +171,9 @@ public class DroidGuardService extends Service implements DetectorEventListener 
 		}
 	}
 
+	/**
+	 * Stop all selected notifiers from notifying.
+	 */
 	private void stopAllNotifiers() {
 		for (Notifier notifier : notifiers) {
 			if (null != notifier) {

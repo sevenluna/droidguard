@@ -14,8 +14,16 @@ import android.media.RingtoneManager;
  * @author Ken
  * 
  */
-public class RingtoneNotifier extends Notifier {
+public final class RingtoneNotifier extends Notifier {
 
+	/**
+	 * Create a new instance of {@link RingtoneNotifier}. Do not use this
+	 * constructor, use {@link NotifierManager#createNotifier(Context, int)}
+	 * instead.
+	 * 
+	 * @param context
+	 *            The context of the caller.
+	 */
 	protected RingtoneNotifier(Context context) {
 		super(context);
 		ringtone = RingtoneManager.getRingtone(context,
@@ -56,7 +64,9 @@ public class RingtoneNotifier extends Notifier {
 		}
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see com.ccmtc.android.droidguard.Notifier#getType()
 	 */
 	@Override

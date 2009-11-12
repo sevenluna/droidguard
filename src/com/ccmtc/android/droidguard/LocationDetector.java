@@ -10,12 +10,30 @@ import android.location.LocationManager;
 import android.os.Bundle;
 
 /**
+ * This detector uses GPS to detect environment changes.
+ * 
  * @author Ken
  * 
  */
 public class LocationDetector extends Detector implements LocationListener {
 
+	/**
+	 * The threshold distance to confirm the stability of initiating location.
+	 */
 	public static final float DISTANCE_THRESHOLD = 10;
+
+	/**
+	 * Gets if GPS is enabled on the device.
+	 * 
+	 * @param context
+	 *            The context of the caller.
+	 * @return True if GPS is enabled. Otherwise, false.
+	 */
+	public static boolean isGpsEnabled(Context context) {
+		return ((LocationManager) context
+				.getSystemService(Context.LOCATION_SERVICE))
+				.isProviderEnabled(LocationManager.GPS_PROVIDER);
+	}
 
 	private final LocationManager locationMgr;
 
@@ -24,7 +42,12 @@ public class LocationDetector extends Detector implements LocationListener {
 	private boolean benchmarkSet = false;
 
 	/**
+	 * Create a new instance of {@link LocationDetector}. Do NOT call this
+	 * constructor directly - use
+	 * {@link DetectorManager#createDetector(Context, int)} instead.
+	 * 
 	 * @param context
+	 *            The context of this detector.
 	 */
 	public LocationDetector(Context context) {
 		super(context);

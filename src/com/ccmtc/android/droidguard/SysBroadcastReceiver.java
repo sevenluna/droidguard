@@ -6,9 +6,13 @@ package com.ccmtc.android.droidguard;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.telephony.TelephonyManager;
 import android.util.Log;
 
 /**
+ * Receives system broadcasts of SMS received or phone ringing when the service
+ * should be stopped.
+ * 
  * @author Ken
  * 
  */
@@ -24,10 +28,33 @@ public class SysBroadcastReceiver extends BroadcastReceiver {
 	 */
 	@Override
 	public void onReceive(Context context, Intent intent) {
-		Log.d(logTag, "System broadcast received.");
-		context.startService(new Intent(context, DroidGuardService.class));
-
-		// TODO Create a notification allowing user to restart service.
+		Log.d(logTag, "System broadcast received. Intent action: "
+				+ intent.getAction());
+		if (isSmsReceived(intent) || isPhoneRinging(intent)) {
+			Log.d(logTag, "Phone ringing or sms received, stopping service.");
+			SysNotification.Set(context, SysNotification.NOTIFICATION_STOPPED);
+			context.startService(new Intent(context, DroidGuardService.class));
+		}
 	}
 
+	/**
+	 * @param intent
+	 * @param action
+	 * @return
+	 */
+	private boolean isPhoneRinging(Intent intent) {
+		return (intent.getAction().equalsIgnoreCase(
+				TelephonyManager.ACTION_PHONE_STATE_CHANGED) && intent
+				.getStringExtra(TelephonyManager.EXTRA_STATE).equalsIgnoreCase(
+						TelephonyManager.EXTRA_STATE_RINGING));
+	}
+
+	/**
+	 * @param action
+	 * @return
+	 */
+	private boolean isSmsReceived(Intent intent) {
+		return (intent.getAction()
+				.equalsIgnoreCase("android.provider.Telephony.SMS_RECEIVED"));
+	}
 }
