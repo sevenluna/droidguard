@@ -30,7 +30,8 @@ public class SysBroadcastReceiver extends BroadcastReceiver {
 	public void onReceive(Context context, Intent intent) {
 		Log.d(logTag, "System broadcast received. Intent action: "
 				+ intent.getAction());
-		if (isSmsReceived(intent) || isPhoneRinging(intent)) {
+		if ((isSmsReceived(intent) && isToStopOnPhoneRinging(context))
+				|| isPhoneRinging(intent) && isToStopOnSmsReceived(context)) {
 			Log.d(logTag, "Phone ringing or sms received, stopping service.");
 			SysNotification.Set(context, SysNotification.NOTIFICATION_STOPPED);
 			context.startService(new Intent(context, DroidGuardService.class));
@@ -56,5 +57,21 @@ public class SysBroadcastReceiver extends BroadcastReceiver {
 	private boolean isSmsReceived(Intent intent) {
 		return (intent.getAction()
 				.equalsIgnoreCase("android.provider.Telephony.SMS_RECEIVED"));
+	}
+
+	/**
+	 * @param context
+	 * @return
+	 */
+	private boolean isToStopOnPhoneRinging(Context context) {
+		return PrefStore.isStopServiceOnIncomingCall(context);
+	}
+
+	/**
+	 * @param context
+	 * @return
+	 */
+	private boolean isToStopOnSmsReceived(Context context) {
+		return PrefStore.isStopServiceOnSms(context);
 	}
 }

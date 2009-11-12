@@ -35,6 +35,10 @@ public class PrefStore {
 	 */
 	private static final String PREF_DETECTOR_SENSITIVITIES = "detector_sensitivities";
 
+	private static final String PREF_STOP_SERVICE_ON_INCOMING_CALL = "stop_service_on_incoming_call";
+
+	private static final String PREF_STOP_SERVICE_ON_SMS = "stop_service_on_sms";
+
 	/**
 	 * The default value of {@link #PREF_SELECTED_DETECTORS} preferences.
 	 */
@@ -60,6 +64,10 @@ public class PrefStore {
 	 */
 	public static final int DEFAULT_DETECTOR_SENSITIVITY = Detector.DETECTOR_CHANGELEVEL_MEDIUM;
 
+	public static final boolean DEFAULT_STOP_SERVICE_ON_INCOMING_CALL = true;
+
+	public static final boolean DEFAULT_STOP_SERVICE_ON_SMS = true;
+
 	/**
 	 * Get the {@link SharedPreferences} of this application.
 	 * 
@@ -71,6 +79,12 @@ public class PrefStore {
 		return PreferenceManager.getDefaultSharedPreferences(context);
 	}
 
+	/**
+	 * Reset all preferences to their default values.
+	 * 
+	 * @param context
+	 *            Context of the caller.
+	 */
 	public static void resetAll(Context context) {
 		getSharedPreferences(context).edit()
 				.putInt(PREF_START_GUARD_WAIT_SECONDS,
@@ -80,7 +94,6 @@ public class PrefStore {
 						DEFAULT_DETECTOR_SENSITIVITIES).putLong(
 						PREF_SELECTED_NOTIFIERS, DEFAULT_SELECTED_NOTIFIERS)
 				.commit();
-
 	}
 
 	/**
@@ -298,5 +311,49 @@ public class PrefStore {
 				value ? selectedNotifiers | typeToBitwise(notifierType)
 						: selectedNotifiers & ~typeToBitwise(notifierType))
 				.commit();
+	}
+
+	/**
+	 * Gets the preference of stopping service on incoming call.
+	 * 
+	 * @return The current preference.
+	 */
+	public static boolean isStopServiceOnIncomingCall(Context context) {
+		return getSharedPreferences(context).getBoolean(
+				PREF_STOP_SERVICE_ON_INCOMING_CALL,
+				DEFAULT_STOP_SERVICE_ON_INCOMING_CALL);
+	}
+
+	/**
+	 * Sets the preference of whether to stop service on incoming call.
+	 * 
+	 * @param value
+	 *            The value of preference to be set to.
+	 */
+	public static void setStopServiceOnIncomingCall(Context context,
+			boolean value) {
+		getSharedPreferences(context).edit().putBoolean(
+				PREF_STOP_SERVICE_ON_INCOMING_CALL, value).commit();
+	}
+
+	/**
+	 * Gets the preference of whether to stop service on receiving SMS.
+	 * 
+	 * @return The current preference.
+	 */
+	public static boolean isStopServiceOnSms(Context context) {
+		return getSharedPreferences(context).getBoolean(
+				PREF_STOP_SERVICE_ON_SMS, DEFAULT_STOP_SERVICE_ON_SMS);
+	}
+
+	/**
+	 * Sets the preference of whether to stop service on receiving SMS.
+	 * 
+	 * @param value
+	 *            The value of preference to be set to.
+	 */
+	public static void setStopServiceOnSms(Context context, boolean value) {
+		getSharedPreferences(context).edit().putBoolean(
+				PREF_STOP_SERVICE_ON_SMS, value).commit();
 	}
 }
