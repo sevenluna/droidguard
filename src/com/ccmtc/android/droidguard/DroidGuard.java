@@ -9,13 +9,13 @@ import android.app.Dialog;
 import android.app.AlertDialog.Builder;
 import android.content.Context;
 import android.content.DialogInterface;
+
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.Gallery;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.SeekBar;
@@ -143,18 +143,18 @@ public class DroidGuard extends Activity {
 			});
 
 			builder = new AlertDialog.Builder(this);
-			builder.setTitle(R.string.sensitivity)
-					.setPositiveButton("OK", new DialogInterface.OnClickListener(){
-
+			builder.setTitle(R.string.sensitivity).setPositiveButton("OK",
+					new DialogInterface.OnClickListener() {
 
 						@Override
 						public void onClick(DialogInterface dialog, int which) {
 							// TODO Auto-generated method stub
-							TextView lv = (TextView) DroidGuard.this. findViewById(R.id.CurrentOp);
+							TextView lv = (TextView) DroidGuard.this
+									.findViewById(R.id.CurrentOp);
 							lv.setText(Integer.toString(currentSen));
 						}
 
-						}).setView(contentlayout);
+					}).setView(contentlayout);
 
 			dialog = builder.create();
 			return dialog;
@@ -213,28 +213,25 @@ public class DroidGuard extends Activity {
 			LayoutInflater abInflater = (LayoutInflater) abContext
 					.getSystemService(LAYOUT_INFLATER_SERVICE);
 			View ablayout = abInflater.inflate(R.layout.about_dialog,
-					(ViewGroup) findViewById(R.id.abLayoutDlg));
+					(ViewGroup) findViewById(R.id.lvAbout));
 
-			Gallery ga = (Gallery) ablayout.findViewById(R.id.gallery);
+			ListView lvabout = (ListView) ablayout.findViewById(R.id.lvAbout);
+			SimpleAdapter saAbout = CreatAboutList();
 
-			ga.setAdapter(new ImageAdapter(this));
+			lvabout.setAdapter(saAbout);
 
-			ga.setOnItemClickListener(new OnItemClickListener() {
+			lvabout.setOnItemClickListener(new OnItemClickListener() {
 				public void onItemClick(AdapterView<?> parent, View v,
 						int position, long id) {
-					Toast.makeText(DroidGuard.this, "" + position,
-							Toast.LENGTH_SHORT).show();
+dismissDialog(DIALOG_ABOUT_ID);
 				}
 			});
 
-			builder = new AlertDialog.Builder(this);
-			builder.setTitle("About us").setPositiveButton("OK",
-					new DialogInterface.OnClickListener() {
-						public void onClick(DialogInterface dialog, int id) {
-							// 关闭about
-						}
-					});
-			return builder.create();
+			Builder aboutAlert = new AlertDialog.Builder(this)
+					.setTitle("About us")
+					.setView(ablayout);
+
+			return aboutAlert.create();
 		default:
 			return null;
 		}
@@ -258,7 +255,7 @@ public class DroidGuard extends Activity {
 		HashMap<String, Object> map2 = new HashMap<String, Object>();
 		map2.put("ItemImage", R.drawable.icon);
 		map2.put("OpTitle", getText(R.string.wait_time));
-		map2.put("CurrentOp", "" + currentWaits);
+		map2.put("CurrentOp", "" + currentWaits+" seconds");
 		mylist.add(map2);
 
 		HashMap<String, Object> map3 = new HashMap<String, Object>();
@@ -298,5 +295,33 @@ public class DroidGuard extends Activity {
 		currentWaits = PrefStore.getStartGuardWaitSeconds(DroidGuard.this);
 	}
 
+	private SimpleAdapter CreatAboutList() {
+		ArrayList<HashMap<String, Object>> mylist = new ArrayList<HashMap<String, Object>>();
 
+		HashMap<String, Object> map0 = new HashMap<String, Object>();
+		map0.put("ItemImage", R.drawable.icon);
+		map0.put("OpTitle", "Ken Wang");
+		map0.put("CurrentOp", "wanghao0000 AT Gmail");
+		mylist.add(map0);
+
+		HashMap<String, Object> map1 = new HashMap<String, Object>();
+		map1.put("ItemImage", R.drawable.icon);
+		map1.put("OpTitle", "Pengyu Fu");
+		map1.put("CurrentOp", "lhc.simaoji AT Gmail");
+		mylist.add(map1);
+
+		HashMap<String, Object> map2 = new HashMap<String, Object>();
+		map2.put("ItemImage", R.drawable.icon);
+		map2.put("OpTitle", "Freesc Huang");
+		map2.put("CurrentOp", "hjd.click AT Gmail");
+		mylist.add(map2);
+
+		return new SimpleAdapter(this,
+				mylist,// 数据来源
+				R.layout.lvitem,// ListItem的XML实现
+
+				// 动态数组与ListItem对应的子项
+				new String[] { "ItemImage", "OpTitle", "CurrentOp" },
+				new int[] { R.id.ItemImage, R.id.OpTitle, R.id.CurrentOp });
+	}
 }
