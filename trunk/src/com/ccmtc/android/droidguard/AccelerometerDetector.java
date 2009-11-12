@@ -17,7 +17,7 @@ import android.util.Log;
  * @author Ken
  * 
  */
-public class AccelerometerDetector extends Detector implements
+public final class AccelerometerDetector extends Detector implements
 		SensorEventListener {
 
 	private final SensorManager sensorMgr;
@@ -28,9 +28,11 @@ public class AccelerometerDetector extends Detector implements
 
 	/**
 	 * Create a new instance of {@link AccelerometerDetector}. Do NOT call this
-	 * directly - use DetectorManager.createDetector() instead.
+	 * constructor directly - use
+	 * {@link DetectorManager#createDetector(Context, int)} instead.
 	 * 
-	 * @param context The context of this detector.
+	 * @param context
+	 *            The context of this detector.
 	 */
 	public AccelerometerDetector(Context context) {
 		super(context);
@@ -144,14 +146,6 @@ public class AccelerometerDetector extends Detector implements
 	 */
 	@Override
 	public boolean start() {
-		// try {
-		// Log.i("main", "starting...");
-		// Thread.sleep(1000);
-		// Log.i("main", "started");
-		// } catch (InterruptedException e) {
-		// // TODO Auto-generated catch block
-		// e.printStackTrace();
-		// }
 		List<Sensor> accSensors = sensorMgr
 				.getSensorList(Sensor.TYPE_ACCELEROMETER);
 		for (Sensor sensor : accSensors) {

@@ -9,4 +9,5 @@
     <string name="sensitivity ">Sensitivity</string>
     <string name="wait_time">Prepare time</string>
     <string name="about_us">About</string>
+<string name="notification_service_stopped">DroidGuard has stopped guarding. Click to start it again.</string>
 </resources>

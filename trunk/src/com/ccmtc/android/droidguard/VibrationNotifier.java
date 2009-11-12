@@ -12,7 +12,7 @@ import android.os.Vibrator;
  * @author Ken
  * 
  */
-public class VibrationNotifier extends Notifier {
+public final class VibrationNotifier extends Notifier {
 
 	/**
 	 * The time of vibration one time in milliseconds.
@@ -22,10 +22,14 @@ public class VibrationNotifier extends Notifier {
 	private final Vibrator vibrator;
 
 	/**
+	 * Create a new instance of {@link VibrationNotifier}. Do not use this
+	 * constructor, use {@link NotifierManager#createNotifier(Context, int)}
+	 * instead.
 	 * 
 	 * @param context
+	 *            The context of the caller.
 	 */
-	public VibrationNotifier(Context context) {
+	VibrationNotifier(Context context) {
 		super(context);
 		vibrator = (Vibrator) context
 				.getSystemService(Context.VIBRATOR_SERVICE);

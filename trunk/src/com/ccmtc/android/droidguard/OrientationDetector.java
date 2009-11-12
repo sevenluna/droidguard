@@ -17,7 +17,7 @@ import android.util.Log;
  * @author Ken
  * 
  */
-public class OrientationDetector extends Detector implements
+public final class OrientationDetector extends Detector implements
 		SensorEventListener {
 
 	private final SensorManager sensorMgr;
@@ -28,9 +28,11 @@ public class OrientationDetector extends Detector implements
 
 	/**
 	 * Create a new instance of {@link OrientationDetector}. Do NOT call this
-	 * directly - use DetectorManager.createDetector() instead.
+	 * constructor directly - use
+	 * {@link DetectorManager#createDetector(Context, int)} instead.
 	 * 
-	 * @param context The context of this detector.
+	 * @param context
+	 *            The context of this detector.
 	 */
 	public OrientationDetector(Context context) {
 		super(context);

@@ -46,7 +46,7 @@ public class DetectorTest extends Activity implements DetectorEventListener {
 		});
 
 		// Set detector and notifier for debugging.
-		//PrefStore.resetAll(this);
+		// PrefStore.resetAll(this);
 		PrefStore.toggleDetector(this,
 				DetectorManager.DETECTOR_TYPE_ORIENTATION, true);
 		PrefStore.setDetectorSensitivity(this,
@@ -75,7 +75,7 @@ public class DetectorTest extends Activity implements DetectorEventListener {
 		}
 
 		// notifier = new RingtoneNotifier(this);
-		SysNotification.Set(this);
+		SysNotification.Set(this, SysNotification.NOTIFICATION_RUNNING);
 	}
 
 	/*
@@ -118,7 +118,7 @@ public class DetectorTest extends Activity implements DetectorEventListener {
 	public void onDestroy() {
 		stopAllDetectors();
 		super.onDestroy();
-		SysNotification.Unset(this);
+		SysNotification.Unset(this, SysNotification.NOTIFICATION_RUNNING);
 	}
 
 	private void startAllDetectors() {
