@@ -10,4 +10,6 @@
     <string name="wait_time">Prepare time</string>
     <string name="about_us">About</string>
 <string name="notification_service_stopped">DroidGuard has stopped guarding. Click to start it again.</string>
+<string name="toast_service_about_to_start">Droid will start protecting your phone in %d seconds. Please place your phone steadily.</string>
+<string name="toast_service_stopped">DroidGuard has stopped guarding your phone.</string>
 </resources>
