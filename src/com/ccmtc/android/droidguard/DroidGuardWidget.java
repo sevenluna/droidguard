@@ -10,7 +10,6 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.widget.RemoteViews;
-import android.widget.Toast;
 
 public class DroidGuardWidget extends AppWidgetProvider  {
 	private static final String logTag = "DroidGuardWidget";
@@ -43,11 +42,6 @@ public class DroidGuardWidget extends AppWidgetProvider  {
 		appWidgetManager.updateAppWidget(cn, remote);
 		
 		if((update ? !op : op)) {
-			CharSequence text = "start!";
-			int duration = Toast.LENGTH_SHORT;
-
-			Toast toast = Toast.makeText(context, text, duration);
-			toast.show();	
 			Intent intent = new Intent(context, DroidGuardService.class);
 			
 			context.startService(intent);
@@ -55,12 +49,6 @@ public class DroidGuardWidget extends AppWidgetProvider  {
 			
 		}
 		else{
-			CharSequence text = "stop!";
-			int duration = Toast.LENGTH_SHORT;
-
-			Toast toast = Toast.makeText(context, text, duration);
-			toast.show();	
-			
 			Intent intent = new Intent(context, DroidGuardService.class);
 			
 			context.stopService(intent);
