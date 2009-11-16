@@ -2,15 +2,23 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
 	package="com.ccmtc.android.droidguard" android:versionCode="1"
 	android:versionName="1.0">
-	<application android:label="@string/app_name" android:icon="@drawable/icon">
-		<activity android:name=".DroidGuard" android:label="@string/app_name">
+	<application android:icon="@drawable/icon" android:label="@string/app_name">
+	
+	<activity android:name=".DroidGuard" android:label="@string/app_name">
 			<intent-filter>
 				<action android:name="android.intent.action.MAIN" />
 				<category android:name="android.intent.category.LAUNCHER" />
 			</intent-filter>
 		</activity>
+
+
 		<service android:name=".DroidGuardService" android:label="@string/app_name">
 		</service>
+		<!-- <receiver android:name="WifiDetector$WifiReceiver">
+			<intent-filter>
+				<action android:name="android.net.wifi.WifiManager.SCAN_RESULTS_AVAILABLE_ACTION" />
+			</intent-filter>
+		</receiver>-->
 		<receiver android:name=".DroidGuardWidget">
 			<meta-data android:name="android.appwidget.provider"
 				android:resource="@xml/droidguardwidget" />
@@ -25,4 +33,12 @@
 	<uses-permission android:name="android.permission.VIBRATE" />
 	<uses-permission android:name="android.permission.RECEIVE_SMS" />
 	<uses-permission android:name="android.permission.READ_PHONE_STATE" />
+
+
+	<uses-permission android:name="android.permission.ACCESS_WIFI_STATE"></uses-permission>
+	<uses-permission android:name="android.permission.ACCESS_CHECKIN_PROPERTIES"></uses-permission>
+	<uses-permission android:name="android.permission.WAKE_LOCK"></uses-permission>
+	<uses-permission android:name="android.permission.INTERNET"></uses-permission>
+	<uses-permission android:name="android.permission.CHANGE_WIFI_STATE"></uses-permission>
+	<uses-permission android:name="android.permission.MODIFY_PHONE_STATE"></uses-permission>
 </manifest> 
