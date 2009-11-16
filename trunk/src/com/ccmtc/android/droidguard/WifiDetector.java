@@ -2,29 +2,40 @@ package com.ccmtc.android.droidguard;
 
 import java.util.List;
 import java.util.Timer;
+import java.util.Vector;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.media.Ringtone;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiManager;
 import android.util.Log;
 
 public class WifiDetector extends Detector {
-	WifiManager mainWifi;
-	WifiReceiver receiverWifi;
-
-	int num;
+	static private final int InitWifiLevel = -55;
+	static private final int AlertWifiLevel = -65;
+	static WifiManager mainWifi;
+	static WifiReceiver receiverWifi;
+	static int flag = 0;
+	static List<ScanResult> wifiList;
 	Timer timer = new Timer();
-	Context mainContext;
-	List<ScanResult> wifiListResult;
+	static int num = 0;
+	static Vector<ScanResult> wifiListResult = new Vector<ScanResult>();
+	static Ringtone ringtone;
+
 
 	protected WifiDetector(Context context) {
 		super(context);
+		Log.d("WifiDetector", "WifiDetector");
 		mainWifi = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
-		
+		receiverWifi= new WifiReceiver(this);
+		context.registerReceiver(receiverWifi, new IntentFilter(
+				WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));
+
 	}
+
 
 	@Override
 	public int getType() {
@@ -33,64 +44,128 @@ public class WifiDetector extends Detector {
 
 	@Override
 	public boolean start() {
-		
-		receiverWifi = new WifiReceiver();
-		Log.d("Wifi-start", context.toString());
-		mainContext.registerReceiver(receiverWifi, new IntentFilter(
-				WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));
-		receiverWifi = new WifiReceiver();
-		Log.d("WifiDetector", mainWifi.toString());
-		// registerReceiver(receiverWifi, new
-		// IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));
+		Log.d("WifiDetector", "start");
 
-		Log.d("WifiDetector", "WifiDetector On");
 		timer.schedule(new MyTask(), 0, 5000);
 
 		return true;
 	}
 
 	class MyTask extends java.util.TimerTask {
-
+		
+		
 		@Override
 		public void run() {
 			mainWifi.startScan();
-
+			
+			Log.d("MyTask", "scan OK");
+			
 		}
+	}
+
+	private static int compareValues() {
+
+		int changeLevel = Detector.DETECTOR_CHANGELEVEL_TINY;
+
+		for (ScanResult InitResult : wifiListResult) {
+			int flag=0;
+			for (ScanResult scanResult : wifiList) {
+				if (scanResult.SSID.equals(InitResult.SSID) ) {
+					if(scanResult.level<AlertWifiLevel){
+						num++;
+					}
+				}
+				else{
+					flag++;
+				}
+			}
+
+			if(flag==wifiList.size()){
+				num++;
+			}
+		}
+
+		int newChangeLevel = digitToChangeLevel(num);
+		if (changeLevel < newChangeLevel) {
+			changeLevel = newChangeLevel;
+		}
+		return changeLevel;
 	}
 
 	@Override
 	public boolean stop() {
+
 		timer.cancel();
-		mainContext.unregisterReceiver(receiverWifi);
+		Log.d("unregister", receiverWifi.toString());
+		context.unregisterReceiver(receiverWifi);
+		ringtone.stop();
 		return true;
 	}
 
+	private static int digitToChangeLevel(int num) {
+		Log.d("digitToChangeLevel",new Integer(num).toString());
+		if (5 == num) {
+			return Detector.DETECTOR_CHANGELEVEL_TINY;
+		}
+		if (4 == num) {
+			return Detector.DETECTOR_CHANGELEVEL_LOW;
+		}
+		if (3 == num) {
+			return Detector.DETECTOR_CHANGELEVEL_MEDIUM;
+		}
+		if (2 == num) {
+			return Detector.DETECTOR_CHANGELEVEL_HIGH;
+		}
+		return Detector.DETECTOR_CHANGELEVEL_SIGNIFICANT;
+	}
+
 	class WifiReceiver extends BroadcastReceiver {
+		
+		private final WifiDetector wifiDetector;
+
+		
+		public WifiReceiver(WifiDetector wifiDetector) {
+			this.wifiDetector = wifiDetector;
+		}
+		
 		@Override
-		public void onReceive(Context c, Intent intent) {
-			List<ScanResult> wifiList;
+		public void onReceive(Context context, Intent intent) {
 			String action = intent.getAction();
-			Log.d("Wifi_Receiver", "Receiver" + action);
-			Log.d("Wifi_Receiver", c.toString());
-			 if (intent.getAction().equals(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION)) {
-				 Log.d("Wifi_Receiver", "SCAN_RESULTS_AVAILABLE_ACTION");
-				 Log.d("Wifi_Receiver", mainWifi.toString());
-			 }
+			Log.d("WifiReceiver", action.toString());
+			Log.d("WifiReceiver", receiverWifi.toString());
+			if (action != null) {
+				if (action.equals(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION)) {
 
-
+					wifiList = mainWifi.getScanResults();
+				}
+			}
 			
-			// Log.d("Wifi", wifiList.toString());
-			// int num=0;
-			//        	
-			// for (int i = 0; i < wifiList.size(); i++) {
-			//				
-			// if (wifiList.get(i).level >= (-55)) {
-			// num++;
-			// Log.d("WifiDetector_num",new Integer(num).toString());
-			// }
-			// }
+			
+			if (0 == flag) {
+				
+				Log.d("WifiReceiver", wifiList.toString());
+				for (int i = 0; i < wifiList.size(); i++) {
+
+					if (wifiList.get(i).level > (InitWifiLevel)) {
+						Log.d("WifiReceiver_wifiList", wifiList.get(i).toString());
+						try {
+							wifiListResult.add(wifiList.get(i));
+						} catch (Exception e) {
+							Log.d("WifiReceiver", e.toString());
+						}
+
+						Log.d("WifiReceiver_wifiListResult", wifiListResult.toString());
+					}
+
+				}
+				flag = 1;
+			}
+			
+			int changeLevel = compareValues();
+			wifiDetector.onDetectorEvent(changeLevel);
 
 		}
+
 	}
 
 }
