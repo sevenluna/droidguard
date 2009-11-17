@@ -32,19 +32,38 @@ public class DroidGuard extends Activity {
 
 	public static final int DIALOG_SENSITIVITY_ID = 0;
 	protected static final int LISTITEM_SEN_DIALOG = 0;
-	protected static final int DIALOG_ALT_ID = 1;
-	protected static final int LISTITEM_ALT_DIALOG = 1;
-	protected static final int LISTITEM_ABOUT_DIALOG = 3;
-	protected static final int DIALOG_ABOUT_ID = 3;
-	protected static final int LISTITEM_WAIT_DIALOG = 2;
-	protected static final int DIALOG_WAIT_ID = 2;
+	protected static final int DIALOG_ALT_ID = 2;
+	protected static final int LISTITEM_ALT_DIALOG = 2;
+
+	protected static final int LISTITEM_WAIT_DIALOG = 3;
+	protected static final int DIALOG_WAIT_ID = 3;
+
+	protected static final int LISTITEM_DET_DIALOG = 1;
+	protected static final int DIALOG_DET_ID = 1;
+
+	protected static final int LISTITEM_ABOUT_DIALOG = 4;
+	protected static final int DIALOG_ABOUT_ID = 4;
 
 	private int currentSen = -1;
 	private int currentWaits = -1;
+	
+	private CharSequence currentSenText ="";
 	private String currentAlt = "";
+	private String currentDet = "";
+	
+
+	private final CharSequence[] sensiItems = new CharSequence[]{
+			"significante","high","medium","low","tiny"		
+	};
 	private final CharSequence[] items = new CharSequence[] { "Ringtone",
 			"Vibration", "Calling" };
 	private final boolean[] checkedItems = new boolean[NotifierManager.NOTIFIER_COUNT];
+
+	private final CharSequence[] detectItems = new CharSequence[] {
+			"Accelerometer", "Orientation", "Wifi Field", "Location" };
+
+	private final boolean[] enabledDets = new boolean[DetectorManager.DETECTOR_COUNT];
+
 
 	/** Called when the activity is first created. */
 
@@ -75,6 +94,9 @@ public class DroidGuard extends Activity {
 					break;
 				case LISTITEM_WAIT_DIALOG:
 					showDialog(DIALOG_WAIT_ID);
+					break;
+				case LISTITEM_DET_DIALOG:
+					showDialog(DIALOG_DET_ID);
 					break;
 				case LISTITEM_ABOUT_DIALOG:
 					showDialog(DIALOG_ABOUT_ID);
@@ -152,13 +174,44 @@ public class DroidGuard extends Activity {
 							// TODO Auto-generated method stub
 							TextView tvSen = (TextView) DroidGuard.this
 									.findViewById(R.id.CurrentOp);
-							tvSen.setText(Integer.toString(currentSen));
+							tvSen.setText(sensiItems[currentSen]);
 						}
-
 					}).setView(contentlayout);
 
 			dialog = builder.create();
 			return dialog;
+		case DIALOG_DET_ID:
+			builder = new AlertDialog.Builder(this);
+			builder.setTitle("Detectors").setPositiveButton("OK",
+					new DialogInterface.OnClickListener() {
+						public void onClick(DialogInterface dialog, int id) {
+							// 确认，并更新checkedItems
+							// TODO update item
+							ListView lv = (ListView) DroidGuard.this
+									.findViewById(R.id.lvSettings);
+							Object objAlt = lv.getChildAt(LISTITEM_DET_DIALOG);
+							TextView tvCuAlt = (TextView) ((RelativeLayout) objAlt)
+									.getChildAt(2);
+							UpdateDets();
+							tvCuAlt.setText(currentDet);
+						}
+					});
+			builder.setMultiChoiceItems(detectItems, enabledDets,
+					new DialogInterface.OnMultiChoiceClickListener() {
+						@Override
+						public void onClick(DialogInterface dialog, int which,
+								boolean isChecked) {
+							// TODO Auto-generated method stub
+							// Toast.makeText(getApplicationContext(),
+							// items[which], Toast.LENGTH_SHORT).show();
+							PrefStore.toggleDetector(DroidGuard.this, which,
+									isChecked);
+
+							Log.d("toggle detector", "detector at " + which);
+
+						}
+					});
+			return builder.create();
 
 		case DIALOG_ALT_ID:
 
@@ -200,7 +253,7 @@ public class DroidGuard extends Activity {
 			builder = new AlertDialog.Builder(this);
 
 			builder.setTitle("Set waitting time").setSingleChoiceItems(waits,
-					currentWaits/5, new DialogInterface.OnClickListener() {
+					currentWaits / 5, new DialogInterface.OnClickListener() {
 						public void onClick(DialogInterface dialog, int item) {
 							Toast.makeText(getApplicationContext(),
 									waits[item], Toast.LENGTH_SHORT).show();
@@ -260,26 +313,32 @@ public class DroidGuard extends Activity {
 		HashMap<String, Object> map0 = new HashMap<String, Object>();
 		map0.put("ItemImage", R.drawable.icon);
 		map0.put("OpTitle", getText(R.string.sensitivity));
-		map0.put("CurrentOp", "" + currentSen);
+		map0.put("CurrentOp", "" + currentSenText);
 		mylist.add(map0);
-
+		
 		HashMap<String, Object> map1 = new HashMap<String, Object>();
 		map1.put("ItemImage", R.drawable.icon);
-		map1.put("OpTitle", getText(R.string.alt_ways));
-		map1.put("CurrentOp", currentAlt);
+		map1.put("OpTitle", getText(R.string.Det_ways));
+		map1.put("CurrentOp", currentDet);
 		mylist.add(map1);
 
 		HashMap<String, Object> map2 = new HashMap<String, Object>();
 		map2.put("ItemImage", R.drawable.icon);
-		map2.put("OpTitle", getText(R.string.wait_time));
-		map2.put("CurrentOp", "" + currentWaits + " seconds");
+		map2.put("OpTitle", getText(R.string.alt_ways));
+		map2.put("CurrentOp", currentAlt);
 		mylist.add(map2);
 
 		HashMap<String, Object> map3 = new HashMap<String, Object>();
 		map3.put("ItemImage", R.drawable.icon);
-		map3.put("OpTitle", getText(R.string.about_us));
-		map3.put("CurrentOp", "");
+		map3.put("OpTitle", getText(R.string.wait_time));
+		map3.put("CurrentOp", "" + currentWaits + " seconds");
 		mylist.add(map3);
+
+		HashMap<String, Object> map4 = new HashMap<String, Object>();
+		map4.put("ItemImage", R.drawable.icon);
+		map4.put("OpTitle", getText(R.string.about_us));
+		map4.put("CurrentOp", "");
+		mylist.add(map4);
 
 		return new SimpleAdapter(this,
 				mylist,// 数据来源
@@ -293,7 +352,9 @@ public class DroidGuard extends Activity {
 	private void InitSettings() {
 		currentSen = PrefStore.getDetectorSensitivity(DroidGuard.this,
 				DetectorManager.DETECTOR_TYPE_ACCELEROMETER);
-
+		
+		currentSenText = sensiItems[currentSen];
+		UpdateDets();
 		UpdateAlts();
 
 		currentWaits = PrefStore.getStartGuardWaitSeconds(DroidGuard.this);
@@ -346,5 +407,28 @@ public class DroidGuard extends Activity {
 				currentAlt += items[i] + " ";
 		}
 		return currentAlt;
+	}
+
+	private String UpdateDets() {
+		currentDet = "";
+		enabledDets[DetectorManager.DETECTOR_TYPE_ACCELEMETER] = PrefStore
+				.isDetectorSelected(DroidGuard.this,
+						DetectorManager.DETECTOR_TYPE_ACCELEMETER);
+		enabledDets[DetectorManager.DETECTOR_TYPE_ORIENTATION] = PrefStore
+				.isDetectorSelected(DroidGuard.this,
+						DetectorManager.DETECTOR_TYPE_ORIENTATION);
+		enabledDets[DetectorManager.DETECTOR_TYPE_WIFI] = PrefStore
+				.isDetectorSelected(DroidGuard.this,
+						DetectorManager.DETECTOR_TYPE_WIFI);
+		enabledDets[DetectorManager.DETECTOR_TYPE_LOCATION] = PrefStore
+				.isDetectorSelected(DroidGuard.this,
+						DetectorManager.DETECTOR_TYPE_LOCATION);
+
+		for (int i = 0; i < DetectorManager.DETECTOR_COUNT; i++) {
+			if (enabledDets[i] && !currentDet.contains(detectItems[i]))
+				currentDet += detectItems[i] + " ";
+		}
+
+		return currentDet;
 	}
 }
