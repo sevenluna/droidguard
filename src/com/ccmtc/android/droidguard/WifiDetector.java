@@ -85,16 +85,16 @@ public class WifiDetector extends Detector {
 
 	private static int digitToChangeLevel(int num) {
 		Log.d("digitToChangeLevel",new Integer(num).toString());
-		if (5 == num) {
+		if (1 == num) {
 			return Detector.DETECTOR_CHANGELEVEL_TINY;
 		}
-		if (4 == num) {
+		if (2 == num) {
 			return Detector.DETECTOR_CHANGELEVEL_LOW;
 		}
 		if (3 == num) {
 			return Detector.DETECTOR_CHANGELEVEL_MEDIUM;
 		}
-		if (2 == num) {
+		if (4 == num) {
 			return Detector.DETECTOR_CHANGELEVEL_HIGH;
 		}
 		return Detector.DETECTOR_CHANGELEVEL_SIGNIFICANT;
