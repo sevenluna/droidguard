@@ -32,6 +32,7 @@ public class DroidGuard extends Activity {
 
 	public static final int DIALOG_SENSITIVITY_ID = 0;
 	protected static final int LISTITEM_SEN_DIALOG = 0;
+	
 	protected static final int DIALOG_ALT_ID = 2;
 	protected static final int LISTITEM_ALT_DIALOG = 2;
 
@@ -40,9 +41,13 @@ public class DroidGuard extends Activity {
 
 	protected static final int LISTITEM_DET_DIALOG = 1;
 	protected static final int DIALOG_DET_ID = 1;
+	
+	protected static final int LISTITEM_INT_DIALOG = 4;
+	protected static final int DIALOG_INT_ID = 4;
 
-	protected static final int LISTITEM_ABOUT_DIALOG = 4;
-	protected static final int DIALOG_ABOUT_ID = 4;
+	protected static final int LISTITEM_ABOUT_DIALOG = 5;
+	protected static final int DIALOG_ABOUT_ID = 5;
+	private static final int INTERUPT_COUNT = 2;
 
 	private int currentSen = -1;
 	private int currentWaits = -1;
@@ -50,10 +55,10 @@ public class DroidGuard extends Activity {
 	private CharSequence currentSenText ="";
 	private String currentAlt = "";
 	private String currentDet = "";
-	
+	private String currentIntSettings="";
 
 	private final CharSequence[] sensiItems = new CharSequence[]{
-			"significante","high","medium","low","tiny"		
+			"tiny","low","medium","high","significante"	
 	};
 	private final CharSequence[] items = new CharSequence[] { "Ringtone",
 			"Vibration", "Calling" };
@@ -61,9 +66,15 @@ public class DroidGuard extends Activity {
 
 	private final CharSequence[] detectItems = new CharSequence[] {
 			"Accelerometer", "Orientation", "Wifi Field", "Location" };
-
 	private final boolean[] enabledDets = new boolean[DetectorManager.DETECTOR_COUNT];
 
+	private final CharSequence[] interuptItems = new CharSequence[]{
+			"Incoming Call","Arriving SMS"
+	};
+	private final boolean[] interuptBooleans= new boolean[]{
+			true,//stop when incomming call
+			false//stop when arriving sms
+	};
 
 	/** Called when the activity is first created. */
 
@@ -97,6 +108,9 @@ public class DroidGuard extends Activity {
 					break;
 				case LISTITEM_DET_DIALOG:
 					showDialog(DIALOG_DET_ID);
+					break;
+				case LISTITEM_INT_DIALOG:
+					showDialog(DIALOG_INT_ID);
 					break;
 				case LISTITEM_ABOUT_DIALOG:
 					showDialog(DIALOG_ABOUT_ID);
@@ -142,11 +156,11 @@ public class DroidGuard extends Activity {
 					PrefStore
 							.setDetectorSensitivity(mContext,
 									DetectorManager.DETECTOR_TYPE_ACCELEROMETER,
-									progress);
+									4-progress);
 					PrefStore
 							.setDetectorSensitivity(mContext,
 									DetectorManager.DETECTOR_TYPE_ORIENTATION,
-									progress);
+									4-progress);
 
 					Log.d("seekbar", "" + progress);
 					currentSen = progress;
@@ -278,6 +292,46 @@ public class DroidGuard extends Activity {
 					});
 
 			return builder.create();
+		
+		case DIALOG_INT_ID:
+			builder = new AlertDialog.Builder(this);
+			builder.setTitle("Stop when").setPositiveButton("OK",
+					new DialogInterface.OnClickListener() {
+						public void onClick(DialogInterface dialog, int id) {
+							// 确认，并更新checkedItems
+							// TODO update item
+							ListView lv = (ListView) DroidGuard.this
+									.findViewById(R.id.lvSettings);
+							Object objAlt = lv.getChildAt(LISTITEM_INT_DIALOG);
+							TextView tvCuAlt = (TextView) ((RelativeLayout) objAlt)
+									.getChildAt(2);
+							UpdateInts();
+							tvCuAlt.setText(currentIntSettings);
+						}
+					});
+			builder.setMultiChoiceItems(interuptItems, interuptBooleans,
+					new DialogInterface.OnMultiChoiceClickListener() {
+						@Override
+						public void onClick(DialogInterface dialog, int which,
+								boolean isChecked) {
+							// TODO Auto-generated method stub
+							// Toast.makeText(getApplicationContext(),
+							// items[which], Toast.LENGTH_SHORT).show();
+							switch(which){
+							case 0:
+								PrefStore.setStopServiceOnIncomingCall(DroidGuard.this, isChecked);
+								break;
+							case 1:
+								PrefStore.setStopServiceOnSms(DroidGuard.this, isChecked);
+								break;
+							default:
+								;
+							}
+							Log.d("toggle notify", "notify at " + which);
+
+						}
+					});
+			return builder.create();
 
 		case DIALOG_ABOUT_ID:
 			Context abContext = getApplicationContext();
@@ -318,7 +372,7 @@ public class DroidGuard extends Activity {
 		
 		HashMap<String, Object> map1 = new HashMap<String, Object>();
 		map1.put("ItemImage", R.drawable.icon);
-		map1.put("OpTitle", getText(R.string.Det_ways));
+		map1.put("OpTitle", getText(R.string.det_ways));
 		map1.put("CurrentOp", currentDet);
 		mylist.add(map1);
 
@@ -333,12 +387,18 @@ public class DroidGuard extends Activity {
 		map3.put("OpTitle", getText(R.string.wait_time));
 		map3.put("CurrentOp", "" + currentWaits + " seconds");
 		mylist.add(map3);
-
+		
 		HashMap<String, Object> map4 = new HashMap<String, Object>();
 		map4.put("ItemImage", R.drawable.icon);
-		map4.put("OpTitle", getText(R.string.about_us));
-		map4.put("CurrentOp", "");
+		map4.put("OpTitle", getText(R.string.int_op));
+		map4.put("CurrentOp", currentIntSettings);
 		mylist.add(map4);
+
+		HashMap<String, Object> map5 = new HashMap<String, Object>();
+		map5.put("ItemImage", R.drawable.icon);
+		map5.put("OpTitle", getText(R.string.about_us));
+		map5.put("CurrentOp", "");
+		mylist.add(map5);
 
 		return new SimpleAdapter(this,
 				mylist,// 数据来源
@@ -409,6 +469,23 @@ public class DroidGuard extends Activity {
 		return currentAlt;
 	}
 
+	private String UpdateInts(){		
+		currentIntSettings = "";
+		
+		interuptBooleans[0] = PrefStore
+		.isStopServiceOnIncomingCall((DroidGuard.this));
+		
+		interuptBooleans[1] = PrefStore
+		.isStopServiceOnSms(DroidGuard.this);
+		
+		for (int i = 0; i < INTERUPT_COUNT; i++) {
+			if (interuptBooleans[i])
+				currentIntSettings += interuptItems[i] + " ";
+		}
+		
+		return currentIntSettings;
+		
+	}
 	private String UpdateDets() {
 		currentDet = "";
 		enabledDets[DetectorManager.DETECTOR_TYPE_ACCELEROMETER] = PrefStore
