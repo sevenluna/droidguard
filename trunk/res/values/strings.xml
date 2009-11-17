@@ -1,17 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="hello">Hello World, DroidGuard!</string>
-    <string name="app_name">DroidGuard</string>
-	<string name="notification_service_running">DroidGuard is guarding your phone.</string>
-    <string name="alt_ways">Alert methods</string>
-       <string name="det_ways">Detectors</string>
-       <string name="int_op">Interrupt Operations</string>
-    <string name="alt_ways_ring">Ringtone</string>
-    <string name="alt_ways_vib">Vibration</string>
-    <string name="sensitivity ">Sensitivity</string>
-    <string name="wait_time">Prepare time</string>
-    <string name="about_us">About</string>
-<string name="notification_service_stopped">DroidGuard has stopped guarding. Click to start it again.</string>
-<string name="toast_service_about_to_start">Droid will start protecting your phone in %d seconds. Please place your phone steadily.</string>
+	<string name="hello">Hello World, DroidGuard!</string>
+	<string name="app_name">DroidGuard</string>
+	<string name="notification_service_running">DroidGuard is guarding your phone.
+	</string>
+	<string name="alt_ways">Alert methods</string>
+	<string name="det_ways">Detectors</string>
+	<string name="int_op">Stop when</string>
+	<string name="alt_ways_ring">Ringtone</string>
+	<string name="alt_ways_vib">Vibration</string>
+	<string name="sensitivity ">Sensitivity</string>
+	<string name="wait_time">Prepare time</string>
+	<string name="about_us">About</string>
+	<string name="notification_service_stopped">DroidGuard has stopped guarding. Click to
+		start it again.</string>
+	<string name="toast_service_about_to_start">Droid will start protecting your phone in %d seconds. Please place your phone steadily.</string>
 <string name="toast_service_stopped">DroidGuard has stopped guarding your phone.</string>
 </resources>
