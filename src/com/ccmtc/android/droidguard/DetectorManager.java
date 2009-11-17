@@ -13,7 +13,7 @@ import android.content.Context;
  */
 public final class DetectorManager {
 
-	public static final int DETECTOR_TYPE_ACCELEMETER = 0;
+	public static final int DETECTOR_TYPE_ACCELEROMETER = 0;
 
 	public static final int DETECTOR_TYPE_ORIENTATION = 1;
 
@@ -33,7 +33,7 @@ public final class DetectorManager {
 	 */
 	public static Detector createDetector(Context context, int type) {
 		switch (type) {
-		case DETECTOR_TYPE_ACCELEMETER:
+		case DETECTOR_TYPE_ACCELEROMETER:
 			return new AccelerometerDetector(context);
 			// break;
 		case DETECTOR_TYPE_ORIENTATION:
