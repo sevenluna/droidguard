@@ -119,7 +119,7 @@ public class DroidGuard extends Activity {
 						boolean touch) {
 					PrefStore
 							.setDetectorSensitivity(mContext,
-									DetectorManager.DETECTOR_TYPE_ACCELEMETER,
+									DetectorManager.DETECTOR_TYPE_ACCELEROMETER,
 									progress);
 					PrefStore
 							.setDetectorSensitivity(mContext,
@@ -292,7 +292,7 @@ public class DroidGuard extends Activity {
 
 	private void InitSettings() {
 		currentSen = PrefStore.getDetectorSensitivity(DroidGuard.this,
-				DetectorManager.DETECTOR_TYPE_ACCELEMETER);
+				DetectorManager.DETECTOR_TYPE_ACCELEROMETER);
 
 		UpdateAlts();
 

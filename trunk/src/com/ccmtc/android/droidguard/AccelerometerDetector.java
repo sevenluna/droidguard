@@ -47,7 +47,7 @@ public final class AccelerometerDetector extends Detector implements
 	 */
 	@Override
 	public int getType() {
-		return DetectorManager.DETECTOR_TYPE_ACCELEMETER;
+		return DetectorManager.DETECTOR_TYPE_ACCELEROMETER;
 	}
 
 	/*
