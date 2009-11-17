@@ -4,7 +4,8 @@
     <string name="app_name">DroidGuard</string>
 	<string name="notification_service_running">DroidGuard is guarding your phone.</string>
     <string name="alt_ways">Alert methods</string>
-       <string name="Det_ways">Detectors</string>
+       <string name="det_ways">Detectors</string>
+       <string name="int_op">Interrupt Operations</string>
     <string name="alt_ways_ring">Ringtone</string>
     <string name="alt_ways_vib">Vibration</string>
     <string name="sensitivity ">Sensitivity</string>
