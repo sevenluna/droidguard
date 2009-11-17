@@ -411,9 +411,9 @@ public class DroidGuard extends Activity {
 
 	private String UpdateDets() {
 		currentDet = "";
-		enabledDets[DetectorManager.DETECTOR_TYPE_ACCELEMETER] = PrefStore
+		enabledDets[DetectorManager.DETECTOR_TYPE_ACCELEROMETER] = PrefStore
 				.isDetectorSelected(DroidGuard.this,
-						DetectorManager.DETECTOR_TYPE_ACCELEMETER);
+						DetectorManager.DETECTOR_TYPE_ACCELEROMETER);
 		enabledDets[DetectorManager.DETECTOR_TYPE_ORIENTATION] = PrefStore
 				.isDetectorSelected(DroidGuard.this,
 						DetectorManager.DETECTOR_TYPE_ORIENTATION);
