@@ -32,7 +32,7 @@ public class DroidGuard extends Activity {
 
 	public static final int DIALOG_SENSITIVITY_ID = 0;
 	protected static final int LISTITEM_SEN_DIALOG = 0;
-	
+
 	protected static final int DIALOG_ALT_ID = 2;
 	protected static final int LISTITEM_ALT_DIALOG = 2;
 
@@ -41,7 +41,7 @@ public class DroidGuard extends Activity {
 
 	protected static final int LISTITEM_DET_DIALOG = 1;
 	protected static final int DIALOG_DET_ID = 1;
-	
+
 	protected static final int LISTITEM_INT_DIALOG = 4;
 	protected static final int DIALOG_INT_ID = 4;
 
@@ -51,15 +51,14 @@ public class DroidGuard extends Activity {
 
 	private int currentSen = -1;
 	private int currentWaits = -1;
-	
-	private CharSequence currentSenText ="";
+
+	private CharSequence currentSenText = "";
 	private String currentAlt = "";
 	private String currentDet = "";
-	private String currentIntSettings="";
+	private String currentIntSettings = "";
 
-	private final CharSequence[] sensiItems = new CharSequence[]{
-			"tiny","low","medium","high","significante"	
-	};
+	private final CharSequence[] sensiItems = new CharSequence[] { "tiny",
+			"low", "medium", "high", "significante" };
 	private final CharSequence[] items = new CharSequence[] { "Ringtone",
 			"Vibration", "Calling" };
 	private final boolean[] checkedItems = new boolean[NotifierManager.NOTIFIER_COUNT];
@@ -68,12 +67,12 @@ public class DroidGuard extends Activity {
 			"Accelerometer", "Orientation", "Wifi Field", "Location" };
 	private final boolean[] enabledDets = new boolean[DetectorManager.DETECTOR_COUNT];
 
-	private final CharSequence[] interuptItems = new CharSequence[]{
-			"Incoming Call","Arriving SMS"
-	};
-	private final boolean[] interuptBooleans= new boolean[]{
-			true,//stop when incomming call
-			false//stop when arriving sms
+	private final CharSequence[] interuptItems = new CharSequence[] {
+			"Incoming Call", "Arriving SMS" };
+	private final boolean[] interuptBooleans = new boolean[] { true,// stop when
+																	// incomming
+																	// call
+			false // stop when arriving sms
 	};
 
 	/** Called when the activity is first created. */
@@ -118,8 +117,6 @@ public class DroidGuard extends Activity {
 				default:
 					;
 				}
-
-				InitSettings();
 			}
 		});
 		InitSettings();
@@ -153,14 +150,12 @@ public class DroidGuard extends Activity {
 			sb.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
 				public void onProgressChanged(SeekBar s, int progress,
 						boolean touch) {
-					PrefStore
-							.setDetectorSensitivity(mContext,
-									DetectorManager.DETECTOR_TYPE_ACCELEROMETER,
-									4-progress);
-					PrefStore
-							.setDetectorSensitivity(mContext,
-									DetectorManager.DETECTOR_TYPE_ORIENTATION,
-									4-progress);
+					PrefStore.setDetectorSensitivity(mContext,
+							DetectorManager.DETECTOR_TYPE_ACCELEROMETER,
+							4 - progress);
+					PrefStore.setDetectorSensitivity(mContext,
+							DetectorManager.DETECTOR_TYPE_ORIENTATION,
+							4 - progress);
 
 					Log.d("seekbar", "" + progress);
 					currentSen = progress;
@@ -292,7 +287,7 @@ public class DroidGuard extends Activity {
 					});
 
 			return builder.create();
-		
+
 		case DIALOG_INT_ID:
 			builder = new AlertDialog.Builder(this);
 			builder.setTitle("Stop when").setPositiveButton("OK",
@@ -317,12 +312,14 @@ public class DroidGuard extends Activity {
 							// TODO Auto-generated method stub
 							// Toast.makeText(getApplicationContext(),
 							// items[which], Toast.LENGTH_SHORT).show();
-							switch(which){
+							switch (which) {
 							case 0:
-								PrefStore.setStopServiceOnIncomingCall(DroidGuard.this, isChecked);
+								PrefStore.setStopServiceOnIncomingCall(
+										DroidGuard.this, isChecked);
 								break;
 							case 1:
-								PrefStore.setStopServiceOnSms(DroidGuard.this, isChecked);
+								PrefStore.setStopServiceOnSms(DroidGuard.this,
+										isChecked);
 								break;
 							default:
 								;
@@ -369,7 +366,7 @@ public class DroidGuard extends Activity {
 		map0.put("OpTitle", getText(R.string.sensitivity));
 		map0.put("CurrentOp", "" + currentSenText);
 		mylist.add(map0);
-		
+
 		HashMap<String, Object> map1 = new HashMap<String, Object>();
 		map1.put("ItemImage", R.drawable.icon);
 		map1.put("OpTitle", getText(R.string.det_ways));
@@ -387,7 +384,7 @@ public class DroidGuard extends Activity {
 		map3.put("OpTitle", getText(R.string.wait_time));
 		map3.put("CurrentOp", "" + currentWaits + " seconds");
 		mylist.add(map3);
-		
+
 		HashMap<String, Object> map4 = new HashMap<String, Object>();
 		map4.put("ItemImage", R.drawable.icon);
 		map4.put("OpTitle", getText(R.string.int_op));
@@ -410,13 +407,13 @@ public class DroidGuard extends Activity {
 	}
 
 	private void InitSettings() {
-		currentSen = PrefStore.getDetectorSensitivity(DroidGuard.this,
+		currentSen = 4 - PrefStore.getDetectorSensitivity(DroidGuard.this,
 				DetectorManager.DETECTOR_TYPE_ACCELEROMETER);
-		
+
 		currentSenText = sensiItems[currentSen];
 		UpdateDets();
 		UpdateAlts();
-
+		UpdateInts();
 		currentWaits = PrefStore.getStartGuardWaitSeconds(DroidGuard.this);
 	}
 
@@ -463,29 +460,29 @@ public class DroidGuard extends Activity {
 						NotifierManager.NOTIFIER_TYPE_CALL);
 
 		for (int i = 0; i < NotifierManager.NOTIFIER_COUNT; i++) {
-			if (checkedItems[i] && !currentAlt.contains(items[i]))
+			if (checkedItems[i])
 				currentAlt += items[i] + " ";
 		}
 		return currentAlt;
 	}
 
-	private String UpdateInts(){		
+	private String UpdateInts() {
 		currentIntSettings = "";
-		
+
 		interuptBooleans[0] = PrefStore
-		.isStopServiceOnIncomingCall((DroidGuard.this));
-		
-		interuptBooleans[1] = PrefStore
-		.isStopServiceOnSms(DroidGuard.this);
-		
+				.isStopServiceOnIncomingCall((DroidGuard.this));
+
+		interuptBooleans[1] = PrefStore.isStopServiceOnSms(DroidGuard.this);
+
 		for (int i = 0; i < INTERUPT_COUNT; i++) {
 			if (interuptBooleans[i])
 				currentIntSettings += interuptItems[i] + " ";
 		}
-		
+
 		return currentIntSettings;
-		
+
 	}
+
 	private String UpdateDets() {
 		currentDet = "";
 		enabledDets[DetectorManager.DETECTOR_TYPE_ACCELEROMETER] = PrefStore
