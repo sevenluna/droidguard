@@ -5,7 +5,6 @@
     android:layout_height="fill_parent"
 	android:paddingLeft="10dip"
 	android:paddingRight="10dip"
-	android:paddingTop="10dip"
 	android:paddingBottom="10dip">
 	
 
