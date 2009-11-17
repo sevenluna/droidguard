@@ -14,14 +14,16 @@
          <TextView    
                android:text="TextView01"    
                android:layout_height="wrap_content"    
-               android:textSize="30dip"    
+               android:textSize="25dip"    
                android:layout_width="fill_parent"    
-               android:layout_toRightOf="@+id/ItemImage"    
+               android:layout_toRightOf="@+id/ItemImage"
+               android:paddingLeft="8dip"    
                android:id="@+id/OpTitle">  
          </TextView> 
           
          <TextView    
-               android:text="TextView02"    
+               android:text="TextView02" 
+               android:paddingLeft="8dip"     
                android:layout_height="wrap_content"    
                android:layout_width="fill_parent"    
                android:layout_toRightOf="@+id/ItemImage"    
