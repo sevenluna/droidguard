@@ -15,25 +15,25 @@ import android.util.Log;
 
 public class WifiDetector extends Detector {
 	static private final int InitWifiLevel = -55;
-	static private final int AlertWifiLevel = -65;
+	static private final int AlertWifiLevel = -60;
 	static WifiManager mainWifi;
 	static WifiReceiver receiverWifi;
 	static int flag = 0;
 	static List<ScanResult> wifiList;
+	static Vector<ScanResult> wifiListResult = new Vector<ScanResult>();
 	Timer timer = new Timer();
 	static int num = 0;
-	static Vector<ScanResult> wifiListResult = new Vector<ScanResult>();
-	static Ringtone ringtone;
+	
 
 
 	protected WifiDetector(Context context) {
 		super(context);
-		Log.d("WifiDetector", "WifiDetector");
+		
 		mainWifi = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
 		receiverWifi= new WifiReceiver(this);
 		context.registerReceiver(receiverWifi, new IntentFilter(
 				WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));
-
+		Log.d("WifiDetector", "OK");
 	}
 
 
@@ -47,7 +47,6 @@ public class WifiDetector extends Detector {
 		Log.d("WifiDetector", "start");
 
 		timer.schedule(new MyTask(), 0, 5000);
-
 		return true;
 	}
 
@@ -67,23 +66,7 @@ public class WifiDetector extends Detector {
 
 		int changeLevel = Detector.DETECTOR_CHANGELEVEL_TINY;
 
-		for (ScanResult InitResult : wifiListResult) {
-			int flag=0;
-			for (ScanResult scanResult : wifiList) {
-				if (scanResult.SSID.equals(InitResult.SSID) ) {
-					if(scanResult.level<AlertWifiLevel){
-						num++;
-					}
-				}
-				else{
-					flag++;
-				}
-			}
-
-			if(flag==wifiList.size()){
-				num++;
-			}
-		}
+		
 
 		int newChangeLevel = digitToChangeLevel(num);
 		if (changeLevel < newChangeLevel) {
@@ -98,7 +81,6 @@ public class WifiDetector extends Detector {
 		timer.cancel();
 		Log.d("unregister", receiverWifi.toString());
 		context.unregisterReceiver(receiverWifi);
-		ringtone.stop();
 		return true;
 	}
 
@@ -161,8 +143,31 @@ public class WifiDetector extends Detector {
 				flag = 1;
 			}
 			
-			int changeLevel = compareValues();
-			wifiDetector.onDetectorEvent(changeLevel);
+			for (ScanResult InitResult : wifiListResult) {
+				int flag=0;
+				for (ScanResult scanResult : wifiList) {
+					if (scanResult.SSID.equals(InitResult.SSID) ) {
+						if(scanResult.level<AlertWifiLevel){
+							num++;
+							int changeLevel = compareValues();
+							Log.d("changelevel",new Integer(changeLevel).toString());
+							wifiDetector.onDetectorEvent(changeLevel);
+						}
+					}
+					else{
+						flag++;
+					}
+				}
+
+				if(flag==wifiList.size()){
+					num++;
+					int changeLevel = compareValues();
+					Log.d("changelevel",new Integer(changeLevel).toString());
+					wifiDetector.onDetectorEvent(changeLevel);
+				}
+			}
+			
+			
 
 		}
 
