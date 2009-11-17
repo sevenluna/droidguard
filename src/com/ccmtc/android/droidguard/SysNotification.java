@@ -58,7 +58,9 @@ public class SysNotification {
 	 * restarted.
 	 * 
 	 * @param context
+	 *            Context of the caller.
 	 * @param mgr
+	 *            The {@link NotificationManager} instance.
 	 */
 	private static void notifyStopped(Context context, NotificationManager mgr) {
 		Notification notification = new Notification(R.drawable.icon, context
@@ -70,6 +72,7 @@ public class SysNotification {
 		notification.setLatestEventInfo(context, context
 				.getText(R.string.app_name), context
 				.getText(R.string.notification_service_stopped), contentIntent);
+		notification.flags = Notification.FLAG_AUTO_CANCEL;
 		mgr.notify(NOTIFICATION_STOPPED, notification);
 	}
 
@@ -77,7 +80,9 @@ public class SysNotification {
 	 * Create a notification notifying the user of service running.
 	 * 
 	 * @param context
+	 *            Context of the caller.
 	 * @param mgr
+	 *            The {@link NotificationManager} instance.
 	 */
 	private static void notifyRunning(Context context, NotificationManager mgr) {
 		Notification notification = new Notification(R.drawable.icon, context
@@ -86,11 +91,11 @@ public class SysNotification {
 		Intent intent = new Intent(context, DroidGuardService.class);
 		PendingIntent contentIntent = PendingIntent.getService(context, 0,
 				intent, 0);
-		notification.flags = Notification.FLAG_ONGOING_EVENT
-				| Notification.FLAG_NO_CLEAR;
 		notification.setLatestEventInfo(context, context
 				.getText(R.string.app_name), context
 				.getText(R.string.notification_service_running), contentIntent);
+		notification.flags = Notification.FLAG_ONGOING_EVENT
+				| Notification.FLAG_NO_CLEAR;
 		mgr.notify(NOTIFICATION_RUNNING, notification);
 	}
 
