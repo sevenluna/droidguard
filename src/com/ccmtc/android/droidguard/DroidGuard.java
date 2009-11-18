@@ -27,6 +27,11 @@ import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 
+/**
+ * @author GNG.AdroidGroup
+ *
+ */
+
 public class DroidGuard extends Activity {
 
 	public static final int DIALOG_SENSITIVITY_ID = 0;
@@ -122,7 +127,7 @@ public class DroidGuard extends Activity {
 	}
 
 	/*
-	 * 对话框生成器
+	 * Dialog Generator
 	 * 
 	 * @see android.app.Activity#onCreateDialog(int)
 	 */
@@ -357,6 +362,11 @@ public class DroidGuard extends Activity {
 		}
 	}
 
+	
+	/**
+	 * Greate Setting list of DroidGuard
+	 * @return list adaptor
+	 */
 	private SimpleAdapter CreatSettingList() {
 		ArrayList<HashMap<String, Object>> mylist = new ArrayList<HashMap<String, Object>>();
 
@@ -405,6 +415,9 @@ public class DroidGuard extends Activity {
 				new int[] { R.id.ItemImage, R.id.OpTitle, R.id.CurrentOp });
 	}
 
+	/**
+	 * Initialize DroidGuard with current settings
+	 */
 	private void InitSettings() {
 		currentSen = 4 - PrefStore.getDetectorSensitivity(DroidGuard.this,
 				DetectorManager.DETECTOR_TYPE_ACCELEROMETER);
@@ -416,6 +429,9 @@ public class DroidGuard extends Activity {
 		currentWaits = PrefStore.getStartGuardWaitSeconds(DroidGuard.this);
 	}
 
+	/**create the about us list
+	 * @return about list adapter
+	 */
 	private SimpleAdapter CreatAboutList() {
 		ArrayList<HashMap<String, Object>> mylist = new ArrayList<HashMap<String, Object>>();
 
@@ -446,6 +462,9 @@ public class DroidGuard extends Activity {
 				new int[] { R.id.ItemImage, R.id.OpTitle, R.id.CurrentOp });
 	}
 
+	/**update current alert ways
+	 * @return current alert ways
+	 */
 	private String UpdateAlts() {
 		currentAlt = "";
 		checkedItems[NotifierManager.NOTIFIER_TYPE_RINGTONE] = PrefStore
@@ -465,6 +484,9 @@ public class DroidGuard extends Activity {
 		return currentAlt;
 	}
 
+	/**Update current stop whens
+	 * @return Current stop whens
+	 */
 	private String UpdateInts() {
 		currentIntSettings = "";
 
@@ -482,6 +504,10 @@ public class DroidGuard extends Activity {
 
 	}
 
+	/**
+	 * Update current enabled detectors
+	 * @return current detectors
+	 */
 	private String UpdateDets() {
 		currentDet = "";
 		enabledDets[DetectorManager.DETECTOR_TYPE_ACCELEROMETER] = PrefStore
