@@ -29,6 +29,9 @@ public class DroidGuardService extends Service implements DetectorEventListener 
 
 	private static final String logTag = "DroidGuardService";
 
+	private boolean isServiceStarted = false;
+	private Object isServiceStartedSyncRoot = new Object();
+
 	private BroadcastReceiver sysBroadcastReceiver;
 	private Detector[] detectors;
 	private Notifier[] notifiers;
@@ -143,13 +146,25 @@ public class DroidGuardService extends Service implements DetectorEventListener 
 			this.context = context;
 		}
 
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see java.util.TimerTask#run()
+		 */
 		@Override
 		public void run() {
-			startAllDetectors();
-			registerSysBroadcasts(context);
-			// Set status bar notification.
-			SysNotification.Set(context, SysNotification.NOTIFICATION_RUNNING);
-			Log.d(logTag, "Service started.");
+			synchronized (isServiceStartedSyncRoot) {
+				if (!isServiceStarted) {
+					// Start the service actually.
+					startAllDetectors();
+					registerSysBroadcasts(context);
+					// Set status bar notification.
+					SysNotification.Set(context,
+							SysNotification.NOTIFICATION_RUNNING);
+					Log.d(logTag, "Service started.");
+					isServiceStarted = true;
+				}
+			}
 		}
 	}
 
@@ -170,19 +185,24 @@ public class DroidGuardService extends Service implements DetectorEventListener 
 	 */
 	@Override
 	public void onDestroy() {
-		super.onDestroy();
-		stopAllDetectors();
-		stopAllNotifiers();
-		SysNotification.Unset(this, SysNotification.NOTIFICATION_RUNNING);
-		this.unregisterReceiver(sysBroadcastReceiver);
-		Toast.makeText(this, R.string.toast_service_stopped, 3).show();
-		
-		// Send broadcast.
-		Intent widgetIntent = new Intent(this, DroidGuardWidget.class);
-		widgetIntent.setAction("com.ccmtc.android.droidguard.ServiceStopped");
-		this.sendBroadcast(widgetIntent);
-
-		Log.d(logTag, "Service stopped.");
+		synchronized (isServiceStartedSyncRoot) {
+			if (isServiceStarted) {
+				super.onDestroy();
+				stopAllDetectors();
+				stopAllNotifiers();
+				SysNotification.Unset(this,
+						SysNotification.NOTIFICATION_RUNNING);
+				this.unregisterReceiver(sysBroadcastReceiver);
+				// Send broadcast.
+				Intent widgetIntent = new Intent(this, DroidGuardWidget.class);
+				widgetIntent
+						.setAction("com.ccmtc.android.droidguard.ServiceStopped");
+				this.sendBroadcast(widgetIntent);
+				Log.d(logTag, "Service stopped.");
+			}
+			Toast.makeText(this, R.string.toast_service_stopped, 3).show();
+			isServiceStarted = !isServiceStarted;
+		}
 	}
 
 	/*
