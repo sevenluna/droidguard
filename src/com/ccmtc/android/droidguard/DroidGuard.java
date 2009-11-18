@@ -28,7 +28,6 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 
 public class DroidGuard extends Activity {
-	// private static final int CHOICE_MODE_SINGLE = 1;
 
 	public static final int DIALOG_SENSITIVITY_ID = 0;
 	protected static final int LISTITEM_SEN_DIALOG = 0;
@@ -57,14 +56,14 @@ public class DroidGuard extends Activity {
 	private String currentDet = "";
 	private String currentIntSettings = "";
 
-	private final CharSequence[] sensiItems = new CharSequence[] { "tiny",
-			"low", "medium", "high", "significante" };
+	private final CharSequence[] sensiItems = new CharSequence[] { "Dull",
+			"Low", "Medium", "High", "Extreme" };
 	private final CharSequence[] items = new CharSequence[] { "Ringtone",
 			"Vibration", "Calling" };
 	private final boolean[] checkedItems = new boolean[NotifierManager.NOTIFIER_COUNT];
 
 	private final CharSequence[] detectItems = new CharSequence[] {
-			"Accelerometer", "Orientation", "Wifi Field", "Location" };
+			"Accelerometer", "Orientation", "Wifi field", "Location" };
 	private final boolean[] enabledDets = new boolean[DetectorManager.DETECTOR_COUNT];
 
 	private final CharSequence[] interuptItems = new CharSequence[] {
