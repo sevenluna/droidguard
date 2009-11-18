@@ -1,4 +1,4 @@
-rem @echo off
+@echo off
 SET PACK_NAME=droidguard%1_src.zip
 SET X_LISTFILE=src_x_filelist.txt
 echo Packing...
