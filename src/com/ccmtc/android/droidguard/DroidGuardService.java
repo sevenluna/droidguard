@@ -106,6 +106,11 @@ public class DroidGuardService extends Service implements DetectorEventListener 
 		}
 		super.setForeground(true);
 
+		// Send broadcast.
+		Intent widgetIntent = new Intent(this, DroidGuardWidget.class);
+		widgetIntent.setAction("com.ccmtc.android.droidguard.ServiceStarted");
+		this.sendBroadcast(widgetIntent);
+
 		// Notify the user with a toast notification.
 		Toast.makeText(
 				this,
@@ -171,6 +176,12 @@ public class DroidGuardService extends Service implements DetectorEventListener 
 		SysNotification.Unset(this, SysNotification.NOTIFICATION_RUNNING);
 		this.unregisterReceiver(sysBroadcastReceiver);
 		Toast.makeText(this, R.string.toast_service_stopped, 3).show();
+		
+		// Send broadcast.
+		Intent widgetIntent = new Intent(this, DroidGuardWidget.class);
+		widgetIntent.setAction("com.ccmtc.android.droidguard.ServiceStopped");
+		this.sendBroadcast(widgetIntent);
+
 		Log.d(logTag, "Service stopped.");
 	}
 
