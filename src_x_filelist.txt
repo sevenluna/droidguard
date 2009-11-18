@@ -1,0 +1,12 @@
+*svn*
+*.zip
+*.7z
+*.swp
+*.bat
+*.bak
+*~
+*filelist.txt
+bin\*
+gen\*
+doc\*
+
