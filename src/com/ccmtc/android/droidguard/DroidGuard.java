@@ -28,7 +28,7 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 
 /**
- * @author GNG.AdroidGroup
+ * @author GNG.AndroidGroup
  *
  */
 
@@ -85,7 +85,6 @@ public class DroidGuard extends Activity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.settings);
-		// 绑定XML中的ListView，作为Item的容器
 		InitSettings();
 		ListView list = (ListView) findViewById(R.id.lvSettings);
 
@@ -97,8 +96,6 @@ public class DroidGuard extends Activity {
 			@Override
 			public void onItemClick(AdapterView<?> av, View view, int pos,
 					long viewId) {
-				// TODO Auto-generated method stub
-
 				switch (pos) {
 				case LISTITEM_SEN_DIALOG:
 					showDialog(DIALOG_SENSITIVITY_ID);
@@ -198,8 +195,6 @@ public class DroidGuard extends Activity {
 			builder.setTitle("Detectors").setPositiveButton("OK",
 					new DialogInterface.OnClickListener() {
 						public void onClick(DialogInterface dialog, int id) {
-							// 确认，并更新checkedItems
-							// TODO update item
 							ListView lv = (ListView) DroidGuard.this
 									.findViewById(R.id.lvSettings);
 							Object objAlt = lv.getChildAt(LISTITEM_DET_DIALOG);
@@ -214,14 +209,11 @@ public class DroidGuard extends Activity {
 						@Override
 						public void onClick(DialogInterface dialog, int which,
 								boolean isChecked) {
-							// TODO Auto-generated method stub
 							// Toast.makeText(getApplicationContext(),
 							// items[which], Toast.LENGTH_SHORT).show();
 							PrefStore.toggleDetector(DroidGuard.this, which,
 									isChecked);
-
 							Log.d("toggle detector", "detector at " + which);
-
 						}
 					});
 			return builder.create();
@@ -232,8 +224,6 @@ public class DroidGuard extends Activity {
 			builder.setTitle("Alert ways").setPositiveButton("OK",
 					new DialogInterface.OnClickListener() {
 						public void onClick(DialogInterface dialog, int id) {
-							// 确认，并更新checkedItems
-							// TODO update item
 							ListView lv = (ListView) DroidGuard.this
 									.findViewById(R.id.lvSettings);
 							Object objAlt = lv.getChildAt(LISTITEM_ALT_DIALOG);
@@ -297,8 +287,6 @@ public class DroidGuard extends Activity {
 			builder.setTitle("Stop when").setPositiveButton("OK",
 					new DialogInterface.OnClickListener() {
 						public void onClick(DialogInterface dialog, int id) {
-							// 确认，并更新checkedItems
-							// TODO update item
 							ListView lv = (ListView) DroidGuard.this
 									.findViewById(R.id.lvSettings);
 							Object objAlt = lv.getChildAt(LISTITEM_INT_DIALOG);
@@ -364,7 +352,7 @@ public class DroidGuard extends Activity {
 
 	
 	/**
-	 * Greate Setting list of DroidGuard
+	 * Create Setting list of DroidGuard
 	 * @return list adaptor
 	 */
 	private SimpleAdapter CreatSettingList() {
@@ -407,10 +395,8 @@ public class DroidGuard extends Activity {
 		mylist.add(map5);
 
 		return new SimpleAdapter(this,
-				mylist,// 数据来源
-				R.layout.lvitem,// ListItem的XML实现
-
-				// 动态数组与ListItem对应的子项
+				mylist,
+				R.layout.lvitem,
 				new String[] { "ItemImage", "OpTitle", "CurrentOp" },
 				new int[] { R.id.ItemImage, R.id.OpTitle, R.id.CurrentOp });
 	}
@@ -454,10 +440,8 @@ public class DroidGuard extends Activity {
 		mylist.add(map2);
 
 		return new SimpleAdapter(this,
-				mylist,// 数据来源
-				R.layout.lvitem,// ListItem的XML实现
-
-				// 动态数组与ListItem对应的子项
+				mylist,
+				R.layout.lvitem,
 				new String[] { "ItemImage", "OpTitle", "CurrentOp" },
 				new int[] { R.id.ItemImage, R.id.OpTitle, R.id.CurrentOp });
 	}
