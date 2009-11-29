@@ -48,15 +48,12 @@ public class DroidGuardWidget extends AppWidgetProvider {
 		} else {
 			Intent intent = new Intent(context, DroidGuardService.class);
 			context.stopService(intent);
-
 		}
 
 	}
 
 	private void Change(Context context, AppWidgetManager appWidgetManager,
 			int[] appWidgetIds, Intent intent) {
-
-		
 
 		final SharedPreferences prefs = PreferenceManager
 				.getDefaultSharedPreferences(context);
@@ -65,15 +62,16 @@ public class DroidGuardWidget extends AppWidgetProvider {
 		if ((intent.getAction().equals(
 				"com.ccmtc.android.droidguard.ServiceStarted") && (false))
 				|| (intent.getAction().equals(
-						"com.ccmtc.android.droidguard.ServiceStopped") && (true))){
-		prefs.edit().putBoolean(IntentReceiver.ENABLED, (update ? !op : op))
-				.commit();
+						"com.ccmtc.android.droidguard.ServiceStopped") && (true))) {
+			prefs.edit()
+					.putBoolean(IntentReceiver.ENABLED, (update ? !op : op))
+					.commit();
 
-		final RemoteViews remote = new RemoteViews(context.getPackageName(),
-				R.layout.widget);
-		Log.d("change", new Boolean(op).toString());
-		
-			Log.d("change","ok");
+			final RemoteViews remote = new RemoteViews(
+					context.getPackageName(), R.layout.widget);
+			Log.d("change", new Boolean(op).toString());
+
+			Log.d("change", "ok");
 			remote.setImageViewResource(R.id.img, resource);
 			ComponentName cn = new ComponentName(context,
 					DroidGuardWidget.class);
