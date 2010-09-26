@@ -99,13 +99,13 @@ public class DroidGuardWidget extends AppWidgetProvider {
 			}
 
 			else {
-				update = true;
-				Log.d("onReceive", "else");
-				final AppWidgetManager manager = AppWidgetManager
-						.getInstance(context);
-				Change(context, manager, manager
-						.getAppWidgetIds(new ComponentName(context,
-								DroidGuardWidget.class)), intent);
+//				update = true;
+//				Log.d("onReceive", "else");
+//				final AppWidgetManager manager = AppWidgetManager
+//						.getInstance(context);
+//				Change(context, manager, manager
+//						.getAppWidgetIds(new ComponentName(context,
+//								DroidGuardWidget.class)), intent);
 			}
 
 		}
