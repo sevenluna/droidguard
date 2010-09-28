@@ -18,10 +18,15 @@ public class DroidGuardWidget extends AppWidgetProvider {
 	@Override
 	public void onUpdate(Context context, AppWidgetManager appWidgetManager,
 			int[] appWidgetIds) {
+		boolean op;
 		final SharedPreferences prefs = PreferenceManager
-				.getDefaultSharedPreferences(context);
-		boolean op = prefs.getBoolean(IntentReceiver.ENABLED, true);
-		Log.d(logTag, "op="+op);
+		.getDefaultSharedPreferences(context);
+		if(update==true){
+		op = prefs.getBoolean(IntentReceiver.ENABLED, true);
+		}
+		else{
+			op=false;
+		}
 		prefs.edit().putBoolean(IntentReceiver.ENABLED, !op).commit();
 		Log.d(logTag, "op="+op);
 		final RemoteViews remote = new RemoteViews(context.getPackageName(),
