@@ -15,7 +15,7 @@ public class IntentReceiver extends BroadcastReceiver {
 	@Override
 	public void onReceive(Context context, Intent intent) {
 
-		if (! PreferenceManager.getDefaultSharedPreferences(context)
+		if ( !PreferenceManager.getDefaultSharedPreferences(context)
 				.getBoolean(ENABLED, false)) {
 			return;
 		}
