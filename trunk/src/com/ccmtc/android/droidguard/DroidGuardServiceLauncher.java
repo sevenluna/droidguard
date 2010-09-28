@@ -28,7 +28,7 @@ public class DroidGuardServiceLauncher extends Activity {
 				true);
 		PrefStore.setStopServiceOnSms(this, true);
 		PrefStore.setStopServiceOnIncomingCall(this, true);
-
+		
 		startService(new Intent(this,
 				com.ccmtc.android.droidguard.DroidGuardService.class));
 		finish();
